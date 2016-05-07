@@ -67,7 +67,8 @@ function geometryClause (options) {
 
 const esriPredicates = {
   esriSpatialRelContains: 'ST_Contains',
-  esriSpatialRelWithin: 'ST_Within'
+  esriSpatialRelWithin: 'ST_Within',
+  esriSpatialRelIntersects: 'ST_Intersects'
 }
 
 function params (features, geometry) {
