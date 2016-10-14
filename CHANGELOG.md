@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+* Can now handle multiPolygons with empty coords array
+
 ## [1.2.0] - 07-26-2016
 ### Added
 * Support calling functions on fields like `UPPER`
