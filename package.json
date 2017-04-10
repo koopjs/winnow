@@ -31,7 +31,7 @@
   "homepage": "https://github.com/FeatureServer/winnow#readme",
   "dependencies": {
     "@turf/bbox-polygon": "^4.1.0",
-    "@turf/centroid": "^3.7.5",
+    "@turf/centroid": "^4.1.0",
     "alasql": "^0.3.6",
     "highland": "^3.0.0-beta.3",
     "lodash": "^4.17.4",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "buble": "^0.15.2",
     "feature-parser": "^1.0.1",
-    "standard": "^9.0.1",
+    "standard": "^10.0.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
   }
