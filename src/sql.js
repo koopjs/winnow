@@ -51,7 +51,18 @@ sql.fn.esriGeom = function (geometry) {
 
 sql.fn.project = function (geometry, projection) {
   if (geometry && geometry.coordinates) {
-    const coordinates = proj4(projection).forward(geometry.coordinates)
+    var coordinates;
+    
+    if (geometry.type === 'Polygon') {
+        //unbox and convert each coord
+        var convert = geometry.coordinates[0].map(function(coord) {
+          return proj4(projection).forward(coord);
+        });
+        // rebox
+        coordinates = [convert]
+    } else {
+        coordinates = proj4(projection).forward(geometry.coordinates)
+    }
     return {
       type: geometry.type,
       coordinates
