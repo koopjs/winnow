@@ -2,6 +2,7 @@
 const test = require('tape')
 const winnow = require('../src')
 const features = require('./fixtures/snow.json').features
+const polygonFeatures = require('./fixtures/polygon.json').features
 
 test('Project to Web Mercator using 3857', t => {
   t.plan(2)
@@ -25,6 +26,28 @@ test('Project to Web Mercator using 3857 and translating to esri', t => {
   t.equal(results.length, 1)
   t.equal(results[0].geometry.x, -11682713.391976157)
   t.equal(results[0].geometry.y, 4857924.005275469)
+})
+
+test('Project a polygon to Web Mercator using 3857 and translating to esri', t => {
+  t.plan(2)
+  const options = {
+    projection: 3857,
+    limit: 1,
+    toEsri: true
+  }
+  const results = winnow.query(polygonFeatures, options)
+
+  t.equal(results.length, 1)
+  t.deepEqual(results[0].geometry.rings, [ 
+    [
+      [ -13247454.246160466, 6496535.908013698 ],
+      [ -11408073.597505985, 6985732.8890388245 ],
+      [ -9216471.12251341, 4813698.293287256 ],
+      [ -10214432.963804673, 3874440.0897190133 ],
+      [ -12934368.178304385, 3424378.867175897 ],
+      [ -13247454.246160466, 6496535.908013698 ] 
+    ] 
+  ])
 })
 
 test('Project to Web Mercator using 3857 with an esri style outSR', t => {
