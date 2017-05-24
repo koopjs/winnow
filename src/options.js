@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const convertFromEsri = require('./geometry/convert-from-esri')
 const transformArray = require('./geometry/transform-array')
 const transformEnvelope = require('./geometry/transform-envelope')
@@ -9,7 +10,7 @@ const esriPredicates = {
 }
 
 function prepare (options) {
-  return Object.assign({}, options, {
+  return _.merge({}, options, {
     where: normalizeWhere(options),
     geometry: normalizeGeometry(options),
     spatialPredicate: normalizeSpatialPredicate(options),
