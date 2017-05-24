@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Support outSR for polygons and lines
 
+## [1.8.8] - 04-26-2017
+### Fixed
+* Handle possible exception when field domains are null
+
 ## [1.8.7] - 04-13-2017
 ### Fixed
 * Handle esri-style date queries
@@ -139,6 +143,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * Initial release
 
+[1.8.8]: https://github.com/featureserver/winnow/compare/v1.8.7...v1.8.8
+[1.8.7]: https://github.com/featureserver/winnow/compare/v1.8.7...v1.8.6
 [1.8.6]: https://github.com/featureserver/winnow/compare/v1.8.5...v1.8.6
 [1.8.5]: https://github.com/featureserver/winnow/compare/v1.8.5...v1.8.4
 [1.8.4]: https://github.com/featureserver/winnow/compare/v1.8.3...v1.8.4
