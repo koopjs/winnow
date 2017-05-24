@@ -9,7 +9,7 @@ const esriPredicates = {
 }
 
 function prepare (options) {
-  return {
+  return Object.assign({}, options, {
     where: normalizeWhere(options),
     geometry: normalizeGeometry(options),
     spatialPredicate: normalizeSpatialPredicate(options),
@@ -19,12 +19,8 @@ function prepare (options) {
     groupBy: normalizeGroupBy(options),
     limit: normalizeLimit(options),
     offset: normalizeOffset(options),
-    projection: normalizeProjection(options),
-    esri: options.esri,
-    toEsri: options.toEsri,
-    esriFields: options.esriFields,
-    collection: options.collection
-  }
+    projection: normalizeProjection(options)
+  })
 }
 
 function normalizeWhere (options) {
