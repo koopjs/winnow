@@ -1,4 +1,4 @@
-const convertFromEsri = require('./geometry/convertFromEsri')
+const convertFromEsri = require('./geometry/convert-from-esri')
 const transformArray = require('./geometry/transform-array')
 const transformEnvelope = require('./geometry/transform-envelope')
 const projectCoordinates = require('./geometry/project-coordinates')

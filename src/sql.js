@@ -1,5 +1,5 @@
 const Terraformer = require('terraformer')
-const convertToEsri = require('./geometry/convertToEsri')
+const convertToEsri = require('./geometry/convert-to-esri')
 const sql = require('alasql')
 const geohash = require('ngeohash')
 const centroid = require('@turf/centroid')
