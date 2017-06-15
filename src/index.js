@@ -3,6 +3,7 @@ const sql = require('./sql')
 const Query = require('./query')
 const Params = require('./params')
 const Options = require('./options')
+const detectFieldsType = require('./detect-fields-type')
 const _ = require('lodash')
 const Winnow = {}
 
@@ -21,20 +22,16 @@ Winnow.query = function (input, options = {}) {
 
   const query = Query.create(options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
-  let filtered
-  if (options.aggregates) {
-    filtered = aggregateQuery(features, query, options)
-  } else if (options.limit) {
-    filtered = limitQuery(features, query, options)
-  } else {
-    filtered = standardQuery(features, query, options)
-  }
-  return finishQuery(filtered, options)
+
+  if (options.aggregates) return aggregateQuery(features, query, options)
+  else if (options.limit) return limitQuery(features, query, options)
+  else return standardQuery(features, query, options)
 }
 
 function aggregateQuery (features, query, options) {
   const params = Query.params(features, options)
-  return sql(query, params)
+  const filtered = sql(query, params)
+  return finishQuery(filtered, options)
 }
 
 function limitQuery (features, query, options) {
@@ -45,16 +42,34 @@ function limitQuery (features, query, options) {
     if (result[0]) filtered.push(result[0])
     return filtered.length === options.limit
   })
-  return filtered
+  return finishQuery(filtered, options)
 }
 
 function standardQuery (features, query, options) {
-  return features.reduce((filteredFeatures, feature) => {
+  let dateFields = []
+  const filtered = features.reduce((filteredFeatures, feature, i) => {
+    if (i === 0 && options.collection) {
+      const meta = (options.collection.meta = options.collection.meta || {})
+      meta.fields = detectFieldsType(feature.properties)
+      meta.fields.forEach((field, i) => {
+        if (field.type === 'Date') dateFields.push(field.name)
+      })
+    }
     const params = Query.params([feature], options)
-    const result = sql(query, params)
-    if (result[0]) filteredFeatures.push(result[0])
+    const result = sql(query, params)[0]
+
+    if (!result) return filteredFeatures
+
+    if (dateFields.length) {
+      dateFields.forEach(field => {
+        result.properties[field] = new Date(result.properties[field]).getTime()
+      })
+    }
+
+    filteredFeatures.push(result)
     return filteredFeatures
   }, [])
+  return finishQuery(filtered, options)
 }
 
 Winnow.prepareQuery = function (options) {
