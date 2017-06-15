@@ -18,7 +18,6 @@ Winnow.query = function (input, options = {}) {
   }
 
   options = Options.prepare(options, features)
-  // TODO move these into options
 
   const query = Query.create(options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
