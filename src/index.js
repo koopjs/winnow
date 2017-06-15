@@ -19,12 +19,42 @@ Winnow.query = function (input, options = {}) {
 
   options = Options.prepare(options)
 
-  // The following two functions are query preprocessing steps
   const query = Query.create(options)
-  const params = Query.params(features, options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
-  const filtered = sql(query, params)
+  let filtered
+  if (options.aggregates) {
+    filtered = aggregateQuery(features, query, options)
+  } else if (options.limit) {
+    filtered = limitQuery(features, query, options)
+  } else {
+    filtered = standardQuery(features, query, options)
+  }
   return finishQuery(filtered, options)
+}
+
+function aggregateQuery (features, query, options) {
+  const params = Query.params(features, options)
+  return sql(query, params)
+}
+
+function limitQuery (features, query, options) {
+  let filtered = []
+  features.some(feature => {
+    const params = Query.params([feature], options)
+    const result = sql(query, params)
+    if (result[0]) filtered.push(result[0])
+    return filtered.length === options.limit
+  })
+  return filtered
+}
+
+function standardQuery (features, query, options) {
+  return features.reduce((filteredFeatures, feature) => {
+    const params = Query.params([feature], options)
+    const result = sql(query, params)
+    if (result[0]) filteredFeatures.push(result[0])
+    return filteredFeatures
+  }, [])
 }
 
 Winnow.prepareQuery = function (options) {
