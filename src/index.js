@@ -3,7 +3,6 @@ const sql = require('./sql')
 const Query = require('./query')
 const Params = require('./params')
 const Options = require('./options')
-const detectFieldsType = require('./detect-fields-type')
 const _ = require('lodash')
 const Winnow = {}
 
@@ -18,7 +17,8 @@ Winnow.query = function (input, options = {}) {
     features = input.features
   }
 
-  options = Options.prepare(options)
+  options = Options.prepare(options, features)
+  // TODO move these into options
 
   const query = Query.create(options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
@@ -26,50 +26,6 @@ Winnow.query = function (input, options = {}) {
   if (options.aggregates) return aggregateQuery(features, query, options)
   else if (options.limit) return limitQuery(features, query, options)
   else return standardQuery(features, query, options)
-}
-
-function aggregateQuery (features, query, options) {
-  const params = Query.params(features, options)
-  const filtered = sql(query, params)
-  return finishQuery(filtered, options)
-}
-
-function limitQuery (features, query, options) {
-  let filtered = []
-  features.some(feature => {
-    const params = Query.params([feature], options)
-    const result = sql(query, params)
-    if (result[0]) filtered.push(result[0])
-    return filtered.length === options.limit
-  })
-  return finishQuery(filtered, options)
-}
-
-function standardQuery (features, query, options) {
-  let dateFields = []
-  const filtered = features.reduce((filteredFeatures, feature, i) => {
-    if (i === 0 && options.collection) {
-      const meta = (options.collection.meta = options.collection.meta || {})
-      meta.fields = detectFieldsType(feature.properties)
-      meta.fields.forEach((field, i) => {
-        if (field.type === 'Date') dateFields.push(field.name)
-      })
-    }
-    const params = Query.params([feature], options)
-    const result = sql(query, params)[0]
-
-    if (!result) return filteredFeatures
-
-    if (dateFields.length) {
-      dateFields.forEach(field => {
-        result.properties[field] = new Date(result.properties[field]).getTime()
-      })
-    }
-
-    filteredFeatures.push(result)
-    return filteredFeatures
-  }, [])
-  return finishQuery(filtered, options)
 }
 
 Winnow.prepareQuery = function (options) {
@@ -127,6 +83,43 @@ function finishQuery (features, options) {
   } else {
     return features
   }
+}
+
+function aggregateQuery (features, query, options) {
+  const params = Query.params(features, options)
+  const filtered = sql(query, params)
+  return finishQuery(filtered, options)
+}
+
+function limitQuery (features, query, options) {
+  const filtered = []
+  features.some(feature => {
+    const result = processQuery(feature, query, options)
+    if (result) filtered.push(result)
+    return filtered.length === options.limit
+  })
+  return finishQuery(filtered, options)
+}
+
+function standardQuery (features, query, options) {
+  const filtered = features.reduce((filteredFeatures, feature, i) => {
+    // TODO used passed in fields if available
+    const result = processQuery(feature, query, options)
+    if (result) filteredFeatures.push(result)
+    return filteredFeatures
+  }, [])
+  return finishQuery(filtered, options)
+}
+
+function processQuery (feature, query, options) {
+  const params = Query.params([feature], options)
+  const result = sql(query, params)[0]
+  if (options.dateFields.length && options.toEsri) {
+    options.dateFields.forEach(field => {
+      result.attributes[field] = new Date(result.attributes[field]).getTime()
+    })
+  }
+  return result
 }
 
 module.exports = Winnow
