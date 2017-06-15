@@ -6,7 +6,6 @@ test('detecting fields', t => {
   const options = {}
   const result = Winnow.query(geojson, options)
   const metadata = result.metadata
-  console.log(JSON.stringify(metadata, null, 2))
   t.equal(metadata.fields[0].type, 'Double')
   t.equal(metadata.fields[1].type, 'Integer')
   t.equal(metadata.fields[2].type, 'String')
