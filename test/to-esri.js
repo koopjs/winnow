@@ -24,16 +24,6 @@ test('detecting fields', t => {
   t.end()
 })
 
-test('adding an object id', t => {
-  const options = {
-    toEsri: true
-  }
-  const fixture = _.cloneDeep(geojson)
-  const result = Winnow.query(fixture, options)
-  t.equal(result.features[0].attributes.OBJECTID, 0)
-  t.end()
-})
-
 test('checking if an object id exists', t => {
   const options = {
     toEsri: true
