@@ -11,7 +11,7 @@ test('With a where option', t => {
 
 test('With a where option with multiple statements', t => {
   const options = {
-    where: "Genus like '%Quercus%' AND Street_Name like '%Claremont%' AND House_Number < 600 AND Trunk_Diameter = 9"
+    where: "Genus like '%Quercus%' AND Street_Name like 'CLAREMONT' AND House_Number < 600 AND Trunk_Diameter = 9"
   }
   run('trees', options, 1, t)
 })
