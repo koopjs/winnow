@@ -1,9 +1,115 @@
 'use strict'
+const _ = require('lodash')
 const test = require('tape')
 const winnow = require('../src')
 const features = require('./fixtures/trees.json')
 const snowFeatures = require('./fixtures/snow.json')
 const budgetTable = require('./fixtures/budgetTable.json')
+const classBreaks = require('./fixtures/generateBreaks/generateRenderer-ClassBreaks.json')
+
+test('create breaks', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [0, 2.8])
+  t.deepEqual(results[4], [11.2, 14])
+  t.end()
+})
+
+test('change break count', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.breakCount = 9
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 9)
+  t.deepEqual(results[0], [0, 1.5555555555555556])
+  t.deepEqual(results[8], [12.444444444444445, 14])
+  t.end()
+})
+
+test('change classification field', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.classificationField = 'House_Number'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [1, 910.8])
+  t.deepEqual(results[4], [3640.2, 4550])
+  t.end()
+})
+
+test('change classification method', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.classificationMethod = 'esriClassifyNaturalBreaks'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [0, 1])
+  t.deepEqual(results[4], [10, 14])
+})
+
+test('normalize by field', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.classificationField = 'House_Number'
+  options.classificationDef.normalizationType = 'esriNormalizeByField'
+  options.classificationDef.normalizationField = 'Trunk_Diameter'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [0.07142857142857142, 910.0571428571428])
+  t.deepEqual(results[4], [3640.0142857142855, 4550])
+})
+
+test('normalize by log', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.normalizationType = 'esriNormalizeByLog'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [0, 0.2292256071356476])
+  t.deepEqual(results[4], [0.9169024285425904, 1.146128035678238])
+})
+
+test('normalize by total', t => {
+  t.plan(5)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.normalizationType = 'esriNormalizeByPercentOfTotal'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 5)
+  t.deepEqual(results[0], [0, 0.0013272469579973742])
+  t.deepEqual(results[4], [0.005308987831989497, 0.006636234789986871])
+})
+
+test('unacceptable classificationField', t => {
+  t.plan(1)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.classificationField = 'Common_Name'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(results, undefined)
+})
+
+test('unacceptable classificationMethod', t => {
+  t.plan(1)
+  const options = _.cloneDeep(classBreaks)
+  options.classificationDef.classificationMethod = 'invalidMethod'
+  const results = winnow.query(_.cloneDeep(features.features), options)
+  t.equal(results, undefined)
+})
 
 test('Get a sum', t => {
   t.plan(1)
