@@ -10,7 +10,7 @@ const classBreaks = require('./fixtures/generateBreaks/generateRenderer-ClassBre
 test('create breaks', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -23,7 +23,7 @@ test('change break count', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.breakCount = 9
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 9)
@@ -36,7 +36,7 @@ test('change classification field', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.classificationField = 'House_Number'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -49,7 +49,7 @@ test('change classification method', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.classificationMethod = 'esriClassifyNaturalBreaks'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -63,7 +63,7 @@ test('normalize by field', t => {
   options.classificationDef.classificationField = 'House_Number'
   options.classificationDef.normalizationType = 'esriNormalizeByField'
   options.classificationDef.normalizationField = 'Trunk_Diameter'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -75,7 +75,7 @@ test('normalize by log', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.normalizationType = 'esriNormalizeByLog'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -87,7 +87,7 @@ test('normalize by total', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.normalizationType = 'esriNormalizeByPercentOfTotal'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
@@ -99,7 +99,7 @@ test('unacceptable classificationField', t => {
   t.plan(1)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.classificationField = 'Common_Name'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(results, undefined)
 })
 
@@ -107,7 +107,7 @@ test('unacceptable classificationMethod', t => {
   t.plan(1)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.classificationMethod = 'invalidMethod'
-  const results = winnow.query(_.cloneDeep(features.features), options)
+  const results = winnow.query(_.cloneDeep(features), options)
   t.equal(results, undefined)
 })
 
