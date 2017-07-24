@@ -1,6 +1,7 @@
 'use strict'
 const sql = require('./sql')
 const Query = require('./query')
+const Options = require('./options')
 const { createBreaks } = require('./generateBreaks/breaks')
 const _ = require('lodash')
 
@@ -8,16 +9,31 @@ function breaksQuery (features, query, options) {
   const queriedData = standardQuery(features, query, options)
   if (queriedData === undefined || queriedData.features === undefined) throw new Error('query resposne undefined')
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')
+
   try {
     const classification = options.classificationDef
-    // TODO: HANDLE GEOMETRY TYPE
     if (classification.type === 'classBreaksDef') {
       return createBreaks(queriedData, classification)
-    } else if (classification.type === 'uniqueValuesDef') {
-      // TODO: handle unique values & potentially call a different renderer
-      // use winnow.querySql for UniqueValue --> I'll have to do something for slect distinct 'field' from
+    } else if (classification.type === 'uniqueValueDef') {
+      return calculateUniqueValues(queriedData.features, classification)
     } else throw new Error('unacceptable classification type: ', classification.type)
   } catch (e) { console.log(e) }
+}
+
+function calculateUniqueValues (features, classification) {
+  const field = classification.uniqueValueFields[0] // TODO: group by more than one field
+  let options = {
+    aggregates: [
+      {
+        type: 'count',
+        field: field
+      }
+    ],
+    groupBy: field
+  }
+  options = Options.prepare(options, features)
+  const query = Query.create(options)
+  return aggregateQuery(features, query, options)
 }
 
 function aggregateQuery (features, query, options) {

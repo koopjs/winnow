@@ -2,7 +2,7 @@
   "classificationDef": {
     "type": "uniqueValueDef",
     "uniqueValueFields": [
-      "sub_region"
+      "Genus"
     ],
     "fieldDelimiter": ", ",
     "colorRamp": {
