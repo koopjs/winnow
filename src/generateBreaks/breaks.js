@@ -6,9 +6,13 @@ function createBreaks (data, classification) {
   let values
   try {
     values = getFieldValues(features, classification.classificationField)
-    if (classification.breakCount > values.length) classification.breakCount = values.length // make sure there aren't more breaks than values
+    // make sure there aren't more breaks than values
+    if (classification.breakCount > values.length) classification.breakCount = values.length
     return classifyBreaks(values, features, classification)
-      .map((value, index, array) => { return [array[index - 1] || array[0], value] }).slice(1)
+      .map((value, index, array) => {
+        // increment minValue slightly so that breaks don't overlap
+        return [calculateMinValue(value, index, array), value]
+      }).slice(1) // remove first invalid range
   } catch (e) { console.log(e) }
 }
 
@@ -34,6 +38,25 @@ function classifyBreaks (values, features, classification) {
       } break
     default: throw new Error('invalid classificationMethod: ', classMethod)
   }
+}
+
+// es6 should saved as Math.bump()
+function calculateMinValue (value, index, array) {
+  let minValue = array[index - 1] || array[0]
+  if (isNaN(minValue)) throw new Error('Previous break value is non-numeric')
+  if (minValue !== 0 && minValue !== array[0]) {
+    const divisor = Math.pow(10, getPrecision(minValue))
+    minValue = Math.round((minValue + (1 / divisor)) * divisor) / divisor
+  }
+  return minValue
+}
+
+function getPrecision (a) {
+  if (!isFinite(a)) return 0
+  let e = 1
+  let p = 0
+  while (Math.round(a * e) / e !== a) { e *= 10; p++ }
+  return p
 }
 
 module.exports = { createBreaks }

@@ -16,7 +16,7 @@ test('create breaks', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
   t.deepEqual(results[0], [0, 2.8])
-  t.deepEqual(results[4], [11.2, 14])
+  t.deepEqual(results[4], [11.3, 14])
   t.end()
 })
 
@@ -29,7 +29,7 @@ test('change break count', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 9)
   t.deepEqual(results[0], [0, 1.5555555555555556])
-  t.deepEqual(results[8], [12.444444444444445, 14])
+  t.deepEqual(results[8], [12.444444444444446, 14])
   t.end()
 })
 
@@ -42,7 +42,7 @@ test('change classification field', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
   t.deepEqual(results[0], [1, 910.8])
-  t.deepEqual(results[4], [3640.2, 4550])
+  t.deepEqual(results[4], [3640.3, 4550])
   t.end()
 })
 
@@ -55,7 +55,7 @@ test('change classification method', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
   t.deepEqual(results[0], [0, 1])
-  t.deepEqual(results[4], [10, 14])
+  t.deepEqual(results[4], [11, 14])
 })
 
 test('normalize by field', t => {
@@ -81,7 +81,7 @@ test('normalize by log', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
   t.deepEqual(results[0], [0, 0.2292256071356476])
-  t.deepEqual(results[4], [0.9169024285425904, 1.146128035678238])
+  t.deepEqual(results[4], [0.9169024285425906, 1.146128035678238])
 })
 
 test('normalize by total', t => {
@@ -93,7 +93,7 @@ test('normalize by total', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 5)
   t.deepEqual(results[0], [0, 0.0013272469579973742])
-  t.deepEqual(results[4], [0.005308987831989497, 0.006636234789986871])
+  t.deepEqual(results[4], [0.005308987831989498, 0.006636234789986871])
 })
 
 test('unacceptable classificationField', t => {
@@ -115,7 +115,6 @@ test('unacceptable classificationMethod', t => {
 test('first attempted test at unique values', t => {
   t.plan(1)
   const results = winnow.query(features, _.cloneDeep(uniqueValue))
-  console.log(results)
   t.equal(results.length, 162)
 })
 
