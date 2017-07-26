@@ -8,7 +8,7 @@ const budgetTable = require('./fixtures/budgetTable.json')
 const classBreaks = require('./fixtures/generateBreaks/generateRenderer-ClassBreaks.json')
 const uniqueValue = require('./fixtures/generateBreaks/generateRenderer-UniqueValue.json')
 
-test('create breaks', t => {
+test('create class breaks', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   const results = winnow.query(features, options)
@@ -20,7 +20,7 @@ test('create breaks', t => {
   t.end()
 })
 
-test('change break count', t => {
+test('change class break count', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
   options.classificationDef.breakCount = 9
@@ -112,11 +112,60 @@ test('unacceptable classificationMethod', t => {
   t.equal(results, undefined)
 })
 
-test('first attempted test at unique values', t => {
-  t.plan(1)
-  const results = winnow.query(features, _.cloneDeep(uniqueValue))
+test('create unique values', t => {
+  t.plan(5)
+  const options = _.cloneDeep(uniqueValue)
+  const results = winnow.query(features, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(typeof results === 'object', true)
   t.equal(results.length, 162)
+  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 5908 })
+  t.deepEqual(results[161], { Genus: 'Thevetia', count: 1 })
+  t.end()
 })
+
+test('add unique values', t => {
+  t.plan(6)
+  const options = _.cloneDeep(uniqueValue)
+  const ammendedFeatures = _.cloneDeep(features)
+  ammendedFeatures.features.push({
+    'type': 'Feature',
+    'properties': {
+      'OBJECTID': 99998,
+      'Common_Name': 'SOUTHERN MAGNOLIA',
+      'Genus': 'MAGNOLIA'
+    }
+  }, {
+    'type': 'Feature',
+    'properties': {
+      'OBJECTID': 99999,
+      'Common_Name': 'SOUTHERN NEW_GENUS',
+      'Genus': 'NEW_GENUS'
+    }
+  })
+  const results = winnow.query(ammendedFeatures, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(typeof results === 'object', true)
+  t.equal(results.length, 163)
+  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 5909 })
+  t.deepEqual(results[161], { Genus: 'Thevetia', count: 1 })
+  t.deepEqual(results[162], { Genus: 'NEW_GENUS', count: 1 })
+  t.end()
+})
+
+test('change unique value field', t => {
+  t.plan(5)
+  const options = _.cloneDeep(uniqueValue)
+  options.classificationDef.uniqueValueFields[0] = 'Common_Name'
+  const results = winnow.query(features, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(typeof results === 'object', true)
+  t.equal(results.length, 298)
+  t.deepEqual(results[0], { Common_Name: 'SOUTHERN MAGNOLIA', count: 5846 })
+  t.deepEqual(results[297], { Common_Name: 'ZADD 10', count: 1 })
+  t.end()
+})
+// TODO: add multiple field functionality & tests + fieldDelimiter test
 
 test('Get a sum', t => {
   t.plan(1)
