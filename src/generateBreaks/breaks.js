@@ -1,20 +1,20 @@
+'use strict'
 const Classifier = require('classybrew')
 const Options = require('../options')
 const Query = require('../query')
 const { getFieldValues, normalizeValues } = require('./normalization')
 
 function calculateClassBreaks (features, classification) {
-  let values
-  try {
-    values = getFieldValues(features, classification.classificationField)
-    // make sure there aren't more breaks than values
-    if (classification.breakCount > values.length) classification.breakCount = values.length
-    return classifyBreaks(values, features, classification)
-      .map((value, index, array) => {
-        // increment minValue slightly so that breaks don't overlap
-        return [calculateMinValue(value, index, array), value]
-      }).slice(1) // remove first invalid range
-  } catch (e) { console.log(e) }
+  const values = getFieldValues(features, classification.classificationField)
+  // make sure there aren't more breaks than values
+  if (classification.breakCount > values.length) classification.breakCount = values.length
+
+  // calculate break ranges [ [a-b], [b-c], ...] from input values
+  return classifyBreaks(values, features, classification)
+    .map((value, index, array) => {
+      // change minValue so break ranges don't overlap
+      return [calculateMinValue(value, index, array), value]
+    }).slice(1) // remove first range
 }
 
 function classifyBreaks (values, features, classification) {
