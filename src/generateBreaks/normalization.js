@@ -4,7 +4,7 @@ function getFieldValues (features, field) {
     const properties = feature.properties
     const key = Object.keys(properties).filter(property => { return property === field })
     const value = Number(properties[key])
-    if (isNaN(value)) throw new TypeError('Cannot use values from non-numeric field')
+    if (isNaN(value)) throw new TypeError('Cannot use values from non-recognized or non-numeric field')
     return value
   })
 }

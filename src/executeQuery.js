@@ -1,10 +1,11 @@
 'use strict'
 const sql = require('./sql')
 const Query = require('./query')
-const { calculateClassBreaks, calculateUniqueValues } = require('./generateBreaks/breaks')
+const { calculateClassBreaks, calculateUniqueValue } = require('./generateBreaks/breaks')
 const _ = require('lodash')
 
 function breaksQuery (features, query, options) {
+  // TODO: add check if query is valid (or should this have been handled in query?)
   const queriedData = standardQuery(features, query, options)
   if (queriedData === undefined || queriedData.features === undefined) throw new Error('query resposne undefined')
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')
@@ -14,8 +15,9 @@ function breaksQuery (features, query, options) {
     if (classification.type === 'classBreaksDef') {
       return calculateClassBreaks(queriedData.features, classification)
     } else if (classification.type === 'uniqueValueDef') {
-      const { options, query } = calculateUniqueValues(queriedData.features, classification)
-      return aggregateQuery(features, query, options)
+      const { options, query } = calculateUniqueValue(queriedData.features, classification)
+      let thing = aggregateQuery(queriedData.features, query, options)
+        return thing
     } else throw new Error('unacceptable classification type: ', classification.type)
   } catch (e) { console.log(e) }
 }

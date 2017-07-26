@@ -22,7 +22,7 @@
       "algorithm": "esriHSVAlgorithm"
     }
   },
-  "where": "",
+  "where": "Trunk_Diameter<15",
   "gdbVersion": "",
   "f": "pjson"
 }

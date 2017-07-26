@@ -118,9 +118,9 @@ test('create unique values', t => {
   const results = winnow.query(features, options)
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
-  t.equal(results.length, 162)
-  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 5908 })
-  t.deepEqual(results[161], { Genus: 'Thevetia', count: 1 })
+  t.equal(results.length, 156)
+  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 3778 })
+  t.deepEqual(results[155], { Genus: 'Thevetia', count: 1 })
   t.end()
 })
 
@@ -133,23 +133,25 @@ test('add unique values', t => {
     'properties': {
       'OBJECTID': 99998,
       'Common_Name': 'SOUTHERN MAGNOLIA',
-      'Genus': 'MAGNOLIA'
+      'Genus': 'MAGNOLIA',
+      'Trunk_Diameter': 10
     }
   }, {
     'type': 'Feature',
     'properties': {
       'OBJECTID': 99999,
       'Common_Name': 'SOUTHERN NEW_GENUS',
-      'Genus': 'NEW_GENUS'
+      'Genus': 'NEW_GENUS',
+      'Trunk_Diameter': 11
     }
   })
   const results = winnow.query(ammendedFeatures, options)
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
-  t.equal(results.length, 163)
-  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 5909 })
-  t.deepEqual(results[161], { Genus: 'Thevetia', count: 1 })
-  t.deepEqual(results[162], { Genus: 'NEW_GENUS', count: 1 })
+  t.equal(results.length, 157)
+  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 3779 })
+  t.deepEqual(results[155], { Genus: 'Thevetia', count: 1 })
+  t.deepEqual(results[156], { Genus: 'NEW_GENUS', count: 1 })
   t.end()
 })
 
@@ -160,9 +162,9 @@ test('change unique value field', t => {
   const results = winnow.query(features, options)
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
-  t.equal(results.length, 298)
-  t.deepEqual(results[0], { Common_Name: 'SOUTHERN MAGNOLIA', count: 5846 })
-  t.deepEqual(results[297], { Common_Name: 'ZADD 10', count: 1 })
+  t.equal(results.length, 281)
+  t.deepEqual(results[0], { Common_Name: 'SOUTHERN MAGNOLIA', count: 3722 })
+  t.deepEqual(results[280], { Common_Name: 'ZADD 10', count: 1 })
   t.end()
 })
 // TODO: add multiple field functionality & tests + fieldDelimiter test

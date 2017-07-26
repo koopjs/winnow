@@ -28,6 +28,7 @@ function classifyBreaks (values, features, classification) {
     case 'esriClassifyEqualInterval': return classifier.classify('equal_interval')
     case 'esriClassifyNaturalBreaks': return classifier.classify('jenks')
     case 'esriClassifyQuantile': return classifier.classify('quantile')
+    // TODO: determine how to handle minValue, maxValue, & label when Quantile values are heavily skewed
     // TODO: implement last two classification methods
     case 'esriClassifyGeometricalInterval': return undefined
     case 'esriClassifyStandardDeviation':
@@ -60,7 +61,7 @@ function getPrecision (a) {
   return p
 }
 
-function calculateUniqueValues (features, classification) {
+function calculateUniqueValue (features, classification) {
   const fields = classification.uniqueValueFields[0] // TODO: handle multiple field values
   let options = {
     aggregates: [
@@ -77,4 +78,4 @@ function calculateUniqueValues (features, classification) {
   return { options, query }
 }
 
-module.exports = { calculateClassBreaks, calculateUniqueValues }
+module.exports = { calculateClassBreaks, calculateUniqueValue }
