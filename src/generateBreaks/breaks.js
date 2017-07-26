@@ -1,8 +1,9 @@
 const Classifier = require('classybrew')
+const Options = require('../options')
+const Query = require('../query')
 const { getFieldValues, normalizeValues } = require('./normalization')
 
-function createBreaks (data, classification) {
-  const features = data.features
+function calculateClassBreaks (features, classification) {
   let values
   try {
     values = getFieldValues(features, classification.classificationField)
@@ -40,7 +41,7 @@ function classifyBreaks (values, features, classification) {
   }
 }
 
-// es6 should saved as Math.bump()
+// this should really be a built-in called: Math.bump()
 function calculateMinValue (value, index, array) {
   let minValue = array[index - 1] || array[0]
   if (isNaN(minValue)) throw new Error('Previous break value is non-numeric')
@@ -59,4 +60,21 @@ function getPrecision (a) {
   return p
 }
 
-module.exports = { createBreaks }
+function calculateUniqueValues (features, classification) {
+  const fields = classification.uniqueValueFields[0] // TODO: handle multiple field values
+  let options = {
+    aggregates: [
+      {
+        type: 'count',
+        field: fields,
+        name: 'count'
+      }
+    ],
+    groupBy: fields
+  }
+  options = Options.prepare(options, features)
+  const query = Query.create(options)
+  return { options, query }
+}
+
+module.exports = { calculateClassBreaks, calculateUniqueValues }

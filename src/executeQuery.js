@@ -1,8 +1,7 @@
 'use strict'
 const sql = require('./sql')
 const Query = require('./query')
-const Options = require('./options')
-const { createBreaks } = require('./generateBreaks/breaks')
+const { calculateClassBreaks, calculateUniqueValues } = require('./generateBreaks/breaks')
 const _ = require('lodash')
 
 function breaksQuery (features, query, options) {
@@ -13,27 +12,12 @@ function breaksQuery (features, query, options) {
   try {
     const classification = options.classificationDef
     if (classification.type === 'classBreaksDef') {
-      return createBreaks(queriedData, classification)
+      return calculateClassBreaks(queriedData.features, classification)
     } else if (classification.type === 'uniqueValueDef') {
-      return calculateUniqueValues(queriedData.features, classification)
+      const { options, query } = calculateUniqueValues(queriedData.features, classification)
+      return aggregateQuery(features, query, options)
     } else throw new Error('unacceptable classification type: ', classification.type)
   } catch (e) { console.log(e) }
-}
-
-function calculateUniqueValues (features, classification) {
-  const field = classification.uniqueValueFields[0] // TODO: group by more than one field
-  let options = {
-    aggregates: [
-      {
-        type: 'count',
-        field: field
-      }
-    ],
-    groupBy: field
-  }
-  options = Options.prepare(options, features)
-  const query = Query.create(options)
-  return aggregateQuery(features, query, options)
 }
 
 function aggregateQuery (features, query, options) {
