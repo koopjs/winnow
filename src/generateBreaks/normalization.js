@@ -4,7 +4,7 @@ function getFieldValues (features, field) {
     const properties = feature.properties
     const key = Object.keys(properties).filter(property => { return property === field })
     const value = Number(properties[key])
-    if (isNaN(value)) throw new TypeError('Cannot use values from non-recognized or non-numeric field')
+    if (isNaN(value)) throw new TypeError('Cannot use values from unrecognized or non-numeric field')
     return value
   })
 }
@@ -23,13 +23,16 @@ function normalizeByField (values, features, classification) {
   const normField = classification.normalizationField
   if (normField) {
     const normValues = getFieldValues(features, normField)
-    if (Array.isArray(normValues)) {
-      return values.map((value, index) => {
-        if (isNaN(normValues[index])) throw new Error('Field value to normalize with is non-numeric: ', normField)
-        return value / (normValues[index] <= 0 ? 1 : normValues[index]) // do not divide by <= 0
-      })
-    } else throw new Error('Normalization values must be an array: ', normValues)
+    if (Array.isArray(normValues)) return divideByField(values, normValues)
+    else throw new Error('Normalization values must be an array: ', normValues)
   } else throw new Error('invalid normalizationField: ', normField)
+}
+
+function divideByField (values, normValues) {
+  return values.map((value, index) => {
+    if (isNaN(normValues[index])) throw new Error('Field value to normalize with is non-numeric')
+    return value / (normValues[index] <= 0 ? 1 : normValues[index]) // do not divide by <= 0
+  })
 }
 
 function normalizeByLog (values) {

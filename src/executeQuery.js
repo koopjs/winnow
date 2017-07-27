@@ -7,19 +7,17 @@ const _ = require('lodash')
 function breaksQuery (features, query, options) {
   // TODO: add check if query is valid (or should this have been handled in query?)
   const queriedData = standardQuery(features, query, options)
-  if (queriedData === undefined || queriedData.features === undefined) throw new Error('query resposne undefined')
+  if (queriedData === undefined || queriedData.features === undefined) throw new Error('query response undefined')
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')
 
-  try {
-    const classification = options.classificationDef
-    if (classification.type === 'classBreaksDef') {
-      return calculateClassBreaks(queriedData.features, classification)
-    } else if (classification.type === 'uniqueValueDef') {
-      const { options, query } = calculateUniqueValue(queriedData.features, classification)
-      let thing = aggregateQuery(queriedData.features, query, options)
-        return thing
-    } else throw new Error('unacceptable classification type: ', classification.type)
-  } catch (e) { console.log(e) }
+  const classification = options.classificationDef
+  if (classification.type === 'classBreaksDef') {
+    if (classification.breakCount <= 0) throw new Error('breakCount must be positive: ', classification.breakCount)
+    return calculateClassBreaks(queriedData.features, classification)
+  } else if (classification.type === 'uniqueValueDef') {
+    const { options, query } = calculateUniqueValue(queriedData.features, classification)
+    return aggregateQuery(queriedData.features, query, options)
+  } else throw new Error('unacceptable classification type: ', classification.type)
 }
 
 function aggregateQuery (features, query, options) {
