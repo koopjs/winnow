@@ -9,23 +9,21 @@ function getFieldValues (features, field) {
   })
 }
 
-function normalizeValues (values, features, classification) {
-  const normType = classification.normalizationType
-  switch (normType) {
-    case 'esriNormalizeByField': return normalizeByField(values, features, classification)
-    case 'esriNormalizeByLog': return normalizeByLog(values)
-    case 'esriNormalizeByPercentOfTotal': return normalizeByPercent(values)
-    default: throw new Error('Normalization not supported: ', normType)
+function normalizeClassBreaks (values, features, classification) {
+  switch (classification.normType) {
+    case 'field': return normalizeByField(values, features, classification)
+    case 'log': return normalizeByLog(values)
+    case 'percent': return normalizeByPercent(values)
+    default: throw new Error('Normalization not supported: ', classification.normType)
   }
 }
 
 function normalizeByField (values, features, classification) {
-  const normField = classification.normalizationField
-  if (normField) {
-    const normValues = getFieldValues(features, normField)
+  if (classification.normField) {
+    const normValues = getFieldValues(features, classification.normField)
     if (Array.isArray(normValues)) return divideByField(values, normValues)
     else throw new Error('Normalization values must be an array: ', normValues)
-  } else throw new Error('invalid normalizationField: ', normField)
+  } else throw new Error('invalid normalization field: ', classification.normField)
 }
 
 function divideByField (values, normValues) {
@@ -47,4 +45,4 @@ function normalizeByPercent (values) {
   return values.map(value => { return (value / valueTotal) * 100 })
 }
 
-module.exports = { getFieldValues, normalizeValues }
+module.exports = { getFieldValues, normalizeClassBreaks }

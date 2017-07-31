@@ -3,18 +3,12 @@ const _ = require('lodash')
 const test = require('tape')
 const winnow = require('../src')
 const treesSubset = require('./fixtures/trees_subset.json')
-const classBreaksEsri = require('./fixtures/breaks/classBreaksEsri.json')
-const uniqueValueEsri = require('./fixtures/breaks/uniqueValueEsri.json')
-
-// TODO: create more general test (not the esri way)
-// test('create class breaks', t => {
-//   t.plan(1)
-//   const options = _.cloneDeep()
-// })
+const geoServicesClassBreaks = require('./fixtures/generateBreaks/geoServicesClassBreaks.json')
+const geoServicesUniqueValue = require('./fixtures/generateBreaks/geoServicesUniqueValue.json')
 
 test('create class breaks the esri way', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
   t.equal(Array.isArray(results[0]), true)
@@ -26,7 +20,7 @@ test('create class breaks the esri way', t => {
 
 test('create class breaks without where clause', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   delete options.where
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -39,7 +33,7 @@ test('create class breaks without where clause', t => {
 
 test('change class break count', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.breakCount = 9
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -52,7 +46,7 @@ test('change class break count', t => {
 
 test('change classification field', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationField = 'House_Number'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -65,7 +59,7 @@ test('change classification field', t => {
 
 test('classify using natural breaks', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationMethod = 'esriClassifyNaturalBreaks'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -77,7 +71,7 @@ test('classify using natural breaks', t => {
 
 test('classify using quantile', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationMethod = 'esriClassifyQuantile'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -89,7 +83,7 @@ test('classify using quantile', t => {
 
 test('normalize by field', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationField = 'House_Number'
   options.classificationDef.normalizationType = 'esriNormalizeByField'
   options.classificationDef.normalizationField = 'Trunk_Diameter'
@@ -103,7 +97,7 @@ test('normalize by field', t => {
 
 test('normalize by log', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.normalizationType = 'esriNormalizeByLog'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -115,7 +109,7 @@ test('normalize by log', t => {
 
 test('normalize by total', t => {
   t.plan(5)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.normalizationType = 'esriNormalizeByPercentOfTotal'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
@@ -127,21 +121,21 @@ test('normalize by total', t => {
 
 test('unacceptable classificationField', t => {
   t.plan(1)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationField = 'Common_Name'
   t.throws(function () { winnow.query(treesSubset, options) })
 })
 
 test('unacceptable classificationMethod', t => {
   t.plan(1)
-  const options = _.cloneDeep(classBreaksEsri)
+  const options = _.cloneDeep(geoServicesClassBreaks)
   options.classificationDef.classificationMethod = 'invalidMethod'
   t.throws(function () { winnow.query(treesSubset, options) })
 })
 
 test('create unique values', t => {
   t.plan(5)
-  const options = _.cloneDeep(uniqueValueEsri)
+  const options = _.cloneDeep(geoServicesUniqueValue)
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
@@ -153,7 +147,7 @@ test('create unique values', t => {
 
 test('add unique values', t => {
   t.plan(6)
-  const options = _.cloneDeep(uniqueValueEsri)
+  const options = _.cloneDeep(geoServicesUniqueValue)
   const ammendedtrees = _.cloneDeep(treesSubset)
   ammendedtrees.features.push({
     'type': 'Feature',
@@ -184,7 +178,7 @@ test('add unique values', t => {
 
 test('change unique value field', t => {
   t.plan(5)
-  const options = _.cloneDeep(uniqueValueEsri)
+  const options = _.cloneDeep(geoServicesUniqueValue)
   options.classificationDef.uniqueValueFields[0] = 'Common_Name'
   const results = winnow.query(treesSubset, options)
   t.equal(Array.isArray(results), true)

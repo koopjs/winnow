@@ -22,7 +22,8 @@ function prepare (options, features) {
     groupBy: normalizeGroupBy(options),
     limit: normalizeLimit(options),
     offset: normalizeOffset(options),
-    projection: normalizeProjection(options)
+    projection: normalizeProjection(options),
+    classification: normalizeClassification(options)
   })
   prepared.dateFields = normalizeDateFields(prepared.collection)
   return prepared
@@ -70,7 +71,6 @@ function normalizeDate (where) {
 
 function normalizeSpatialPredicate (options) {
   const predicate = options.spatialPredicate || options.spatialRel
-
   return esriPredicates[predicate] || predicate
 }
 
@@ -132,9 +132,8 @@ function normalizeGeometry (options) {
 
 function normalizeInSR (options) {
   let SR
-  if (options.inSR) {
-    SR = options.inSR
-  } else if (options.geometry.spatialReference) {
+  if (options.inSR) SR = options.inSR
+  else if (options.geometry.spatialReference) {
     if (/WGS_1984_Web_Mercator_Auxiliary_Sphere/.test(options.geometry.spatialReference.wkt)) {
       SR = 3857
     } else {
@@ -166,6 +165,52 @@ function normalizeProjection (options) {
   if (projection === 102100) return 'EPSG:3857'
   if (typeof projection !== 'number') return projection
   else return `EPSG:${projection}`
+}
+
+function normalizeClassification (options) {
+  if (options.classification) return options.classification
+  else if (options.classificationDef) return geoservicesClassification(options)
+  else return undefined
+}
+
+function geoservicesClassification (options) {
+  const inClass = options.classificationDef
+  if (inClass.type === 'classBreaksDef') {
+    return {
+      type: inClass.type,
+      field: inClass.classificationField,
+      method: normalizeGeoservicesMethod(inClass.classificationMethod),
+      breakCount: inClass.breakCount,
+      normType: normalizeGeoservicesNorm(inClass.normalizationType),
+      normField: inClass.normalizationField ? inClass.normalizationField : undefined
+    }
+  } else if (inClass.type === 'uniqueValueDef') {
+    return {
+      type: inClass.type,
+      fields: inClass.uniqueValueFields,
+      delimiter: inClass.fieldDelimiter
+    }
+  } else throw new Error('Input classification type invalid:', inClass.type)
+}
+
+function normalizeGeoservicesMethod (method) {
+  switch (method) {
+    case 'esriClassifyEqualInterval': return 'equalInterval'
+    case 'esriClassifyNaturalBreaks': return 'naturalBreaks'
+    case 'esriClassifyQuantile': return 'quantile'
+    case 'esriClassifyGeometricalInterval': return 'geomInterval'
+    case 'esriClassifyStandardDeviation': return 'std'
+    default: return undefined
+  }
+}
+
+function normalizeGeoservicesNorm (normalization) {
+  switch (normalization) {
+    case 'esriNormalizeByField': return 'field'
+    case 'esriNormalizeByLog': return 'log'
+    case 'esriNormalizeByPercentOfTotal': return 'percent'
+    default: return undefined
+  }
 }
 
 module.exports = { prepare }

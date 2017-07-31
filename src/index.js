@@ -22,7 +22,7 @@ Winnow.query = function (input, options = {}) {
   const query = Query.create(options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
 
-  if (options.classificationDef) return breaksQuery(features, query, options)
+  if (options.classification) return breaksQuery(features, query, options)
   if (options.aggregates) return aggregateQuery(features, query, options)
   else if (options.limit) return limitQuery(features, query, options)
   else return standardQuery(features, query, options)

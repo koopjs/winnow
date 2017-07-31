@@ -1,7 +1,7 @@
 'use strict'
 const sql = require('./sql')
 const Query = require('./query')
-const { calculateClassBreaks, calculateUniqueValue } = require('./generateBreaks/breaks')
+const { calculateClassBreaks, calculateUniqueValueBreaks } = require('./generateBreaks/index')
 const _ = require('lodash')
 
 function breaksQuery (features, query, options) {
@@ -9,12 +9,12 @@ function breaksQuery (features, query, options) {
   if (queriedData === undefined || queriedData.features === undefined) throw new Error('query response undefined')
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')
 
-  const classification = options.classificationDef
+  const classification = options.classification
   if (classification.type === 'classBreaksDef') {
     if (classification.breakCount <= 0) throw new Error('breakCount must be positive: ', classification.breakCount)
     return calculateClassBreaks(queriedData.features, classification)
   } else if (classification.type === 'uniqueValueDef') {
-    const { options, query } = calculateUniqueValue(queriedData.features, classification)
+    const { options, query } = calculateUniqueValueBreaks(queriedData.features, classification)
     return aggregateQuery(queriedData.features, query, options)
   } else throw new Error('unacceptable classification type: ', classification.type)
 }
