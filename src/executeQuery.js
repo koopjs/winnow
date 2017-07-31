@@ -5,7 +5,6 @@ const { calculateClassBreaks, calculateUniqueValue } = require('./generateBreaks
 const _ = require('lodash')
 
 function breaksQuery (features, query, options) {
-  // TODO: add check if query is valid (or should this have been handled in query?)
   const queriedData = standardQuery(features, query, options)
   if (queriedData === undefined || queriedData.features === undefined) throw new Error('query response undefined')
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')

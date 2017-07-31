@@ -1,11 +1,10 @@
 {
-  "classificationDef": {
-    "type": "classBreaksDef",
-    "classificationField": "Trunk_Diameter",
-    "classificationMethod": "esriClassifyEqualInterval",
+  "classification": {
+    "type": "class",
+    "field": "Trunk_Diameter",
+    "method": "equalInterval",
     "breakCount": 5
   },
   "where": "Trunk_Diameter<15",
-  "gdbVersion": "",
   "f": "pjson"
 }

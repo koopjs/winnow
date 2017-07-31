@@ -1,7 +1,9 @@
 {
-  "classification": {
-    "type": "unique",
-    "fields": ["Genus"],
+  "classificationDef": {
+    "type": "uniqueValueDef",
+    "uniqueValueFields": [
+      "Genus"
+    ],
     "fieldDelimiter": ", ",
     "colorRamp": {
       "type": "algorithmic",
@@ -21,5 +23,6 @@
     }
   },
   "where": "Trunk_Diameter<15",
+  "gdbVersion": "",
   "f": "pjson"
 }
