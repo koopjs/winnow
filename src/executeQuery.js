@@ -16,12 +16,6 @@ function breaksQuery (features, query, options) {
   } else if (classification.type === 'unique') {
     const { options, query } = calculateUniqueValueBreaks(queriedData.features, classification)
     return aggregateQuery(queriedData.features, query, options)
-    .map(distinct => {
-      return {
-        'count': distinct.count,
-        'value': classification.fields.map(field => { return distinct[field] })
-      }
-    })
   } else throw new Error('unacceptable classification type: ' + classification.type)
 }
 
