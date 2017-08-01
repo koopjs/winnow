@@ -5,6 +5,7 @@ const winnow = require('../src')
 const treesSubset = require('./fixtures/trees_subset.json')
 const classBreaks = require('./fixtures/generateBreaks/classBreaks.json')
 const uniqueValue = require('./fixtures/generateBreaks/uniqueValue.json')
+const multipleUnique = require('./fixtures/generateBreaks/multipleUnqiue.json')
 const geoServicesClassBreaks = require('./fixtures/generateBreaks/geoServicesClassBreaks.json')
 const geoServicesUniqueValue = require('./fixtures/generateBreaks/geoServicesUniqueValue.json')
 
@@ -142,8 +143,8 @@ test('create unique values', t => {
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
   t.equal(results.length, 6)
-  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 3 })
-  t.deepEqual(results[5], { Genus: 'MELALEUCA', count: 1 })
+  t.deepEqual(results[0], { count: 3, value: ['MAGNOLIA'] })
+  t.deepEqual(results[5], { count: 1, value: ['MELALEUCA'] })
   t.end()
 })
 
@@ -172,9 +173,9 @@ test('add unique values', t => {
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
   t.equal(results.length, 7)
-  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 4 })
-  t.deepEqual(results[5], { Genus: 'MELALEUCA', count: 1 })
-  t.deepEqual(results[6], { Genus: 'NEW_GENUS', count: 1 })
+  t.deepEqual(results[0], { count: 4, value: ['MAGNOLIA'] })
+  t.deepEqual(results[5], { count: 1, value: ['MELALEUCA'] })
+  t.deepEqual(results[6], { count: 1, value: ['NEW_GENUS'] })
   t.end()
 })
 
@@ -183,15 +184,55 @@ test('change unique value field', t => {
   const options = _.cloneDeep(uniqueValue)
   options.classification.fields[0] = 'Common_Name'
   const results = winnow.query(treesSubset, options)
-  console.log(results)
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
   t.equal(results.length, 7)
-  t.deepEqual(results[0], { Common_Name: 'SOUTHERN MAGNOLIA', count: 3 })
-  t.deepEqual(results[6], { Common_Name: 'FLAX-LEAF PAPERBARK', count: 1 })
+  t.deepEqual(results[0], { count: 3, value: ['SOUTHERN MAGNOLIA'] })
+  t.deepEqual(results[6], { count: 1, value: ['FLAX-LEAF PAPERBARK'] })
   t.end()
 })
-// TODO: add multiple field functionality & tests  fieldDelimiter test
+
+test('create unique values with multiple unique fields', t => {
+  t.plan(6)
+  const options = {
+    'classification': {
+      'type': 'unique',
+      'fields': ['EmployeeID', 'ShipperID'],
+      'fieldDelimiter': ', '
+    },
+    'where': 'OBJECTID<11310',
+    'f': 'pjson'
+  }
+  const results = winnow.query(multipleUnique, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(typeof results === 'object', true)
+  t.equal(results.length, 6)
+  t.deepEqual(results[0], { count: 1, value: ['John', 'Marc'] })
+  t.deepEqual(results[3], { count: 2, value: ['Leeroy', 'Marc'] })
+  t.deepEqual(results[5], { count: 1, value: ['Leeroy', 'Eric'] })
+  t.end()
+})
+
+test('cannot create unique values with more than three fields', t => {
+  t.plan(1)
+  const options = {
+    'classification': {
+      'type': 'unique',
+      'fields': ['EmployeeID', 'ShipperID', 'Department', 'Date'],
+      'fieldDelimiter': ', '
+    },
+    'where': 'OBJECTID<11310',
+    'f': 'pjson'
+  }
+  t.throws(function () { winnow.query(treesSubset, options) })
+})
+
+test('unacceptable classification field', t => {
+  t.plan(1)
+  const options = _.cloneDeep(uniqueValue)
+  options.classification.fields[0] = 'Unacceptable Field'
+  t.throws(function () { winnow.query(multipleUnique, options) })
+})
 
 /* geoservices fixtures */
 test('create class breaks using geoservices fixture', t => {
@@ -228,8 +269,8 @@ test('create unique values using geoservices fixture', t => {
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
   t.equal(results.length, 6)
-  t.deepEqual(results[0], { Genus: 'MAGNOLIA', count: 3 })
-  t.deepEqual(results[5], { Genus: 'MELALEUCA', count: 1 })
+  t.deepEqual(results[0], { count: 3, value: ['MAGNOLIA'] })
+  t.deepEqual(results[5], { count: 1, value: ['MELALEUCA'] })
   t.end()
 })
 
@@ -241,7 +282,7 @@ test('modify unique values using geoservices fixture', t => {
   t.equal(Array.isArray(results), true)
   t.equal(typeof results === 'object', true)
   t.equal(results.length, 7)
-  t.deepEqual(results[0], { Common_Name: 'SOUTHERN MAGNOLIA', count: 3 })
-  t.deepEqual(results[6], { Common_Name: 'FLAX-LEAF PAPERBARK', count: 1 })
+  t.deepEqual(results[0], { count: 3, value: ['SOUTHERN MAGNOLIA'] })
+  t.deepEqual(results[6], { count: 1, value: ['FLAX-LEAF PAPERBARK'] })
   t.end()
 })

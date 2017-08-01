@@ -18,8 +18,6 @@ function calculateClassBreaks (features, classification) {
 }
 
 function classifyClassBreaks (values, features, classification) {
-  // TODO: determine how to handle minValue, maxValue, & label when Quantile values are heavily skewed
-  // TODO: implement last two classification methods
   if (classification.normType) values = normalizeClassBreaks(values, features, classification)
   const classifier = new Classifier()
   classifier.setSeries(values)
@@ -30,17 +28,22 @@ function classifyClassBreaks (values, features, classification) {
     case 'naturalBreaks': return classifier.classify('jenks')
     case 'quantile': return classifier.classify('quantile')
     case 'geomInterval': throw new Error('Classification method not yet supported')
-    case 'std': return classifier.classify('std_deviation') // TODO: integrate geoservices' std interval
-    default: throw new Error('invalid classificationMethod: ', classification.method)
+    case 'std': return classifier.classify('std_deviation') // TODO: throw an error if a user tries to include an interval
+    default: throw new Error('invalid classificationMethod: ' + classification.method)
   }
 }
 
 function calculateUniqueValueBreaks (features, classification) {
+  if (classification.fields.length > 3) throw new Error('Cannot classify using more than three fields')
+  classification.fields.map(field => {
+    if (!features[0].properties[field]) throw new Error('Unknown field: ' + field)
+  })
+
   let options = {
     aggregates: [
       {
         type: 'count',
-        field: classification.fields,
+        field: classification.fields[0], // arbitrary field choice
         name: 'count'
       }
     ],

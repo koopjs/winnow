@@ -14,7 +14,7 @@ function normalizeClassBreaks (values, features, classification) {
     case 'field': return normalizeByField(values, features, classification)
     case 'log': return normalizeByLog(values)
     case 'percent': return normalizeByPercent(values)
-    default: throw new Error('Normalization not supported: ', classification.normType)
+    default: throw new Error('Normalization not supported: ' + classification.normType)
   }
 }
 
@@ -22,8 +22,8 @@ function normalizeByField (values, features, classification) {
   if (classification.normField) {
     const normValues = getFieldValues(features, classification.normField)
     if (Array.isArray(normValues)) return divideByField(values, normValues)
-    else throw new Error('Normalization values must be an array: ', normValues)
-  } else throw new Error('invalid normalization field: ', classification.normField)
+    else throw new Error('Normalization values must be an array: ' + normValues)
+  } else throw new Error('invalid normalization field: ' + classification.normField)
 }
 
 function divideByField (values, normValues) {
@@ -41,7 +41,7 @@ function normalizeByLog (values) {
 
 function normalizeByPercent (values) {
   let valueTotal = values.reduce((sum, value) => { return sum + value }, 0)
-  if (valueTotal <= 0) throw new Error('Value total is not positive: ', valueTotal)
+  if (valueTotal <= 0) throw new Error('Value total is not positive: ' + valueTotal)
   return values.map(value => { return (value / valueTotal) * 100 })
 }
 

@@ -11,12 +11,18 @@ function breaksQuery (features, query, options) {
 
   const classification = options.classification
   if (classification.type === 'classes') {
-    if (classification.breakCount <= 0) throw new Error('breakCount must be positive: ', classification.breakCount)
+    if (classification.breakCount <= 0) throw new Error('breakCount must be positive: ' + classification.breakCount)
     return calculateClassBreaks(queriedData.features, classification)
   } else if (classification.type === 'unique') {
     const { options, query } = calculateUniqueValueBreaks(queriedData.features, classification)
     return aggregateQuery(queriedData.features, query, options)
-  } else throw new Error('unacceptable classification type: ', classification.type)
+    .map(distinct => {
+      return {
+        'count': distinct.count,
+        'value': classification.fields.map(field => { return distinct[field] })
+      }
+    })
+  } else throw new Error('unacceptable classification type: ' + classification.type)
 }
 
 function aggregateQuery (features, query, options) {

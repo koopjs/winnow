@@ -192,7 +192,7 @@ function geoservicesClassBreaks (options) {
       fields: inClass.uniqueValueFields,
       delimiter: inClass.fieldDelimiter
     }
-  } else throw new Error('Input classification type invalid:', inClass.type)
+  } else throw new Error('Input classification type invalid:' + inClass.type)
 }
 
 function normalizeGeoservicesMethod (method) {
