@@ -10,10 +10,10 @@ function breaksQuery (features, query, options) {
   if (queriedData.features.length === 0) throw new Error('need features in order to classify')
 
   const classification = options.classification
-  if (classification.type === 'classBreaksDef') {
+  if (classification.type === 'classes') {
     if (classification.breakCount <= 0) throw new Error('breakCount must be positive: ', classification.breakCount)
     return calculateClassBreaks(queriedData.features, classification)
-  } else if (classification.type === 'uniqueValueDef') {
+  } else if (classification.type === 'unique') {
     const { options, query } = calculateUniqueValueBreaks(queriedData.features, classification)
     return aggregateQuery(queriedData.features, query, options)
   } else throw new Error('unacceptable classification type: ', classification.type)

@@ -1,9 +1,9 @@
 {
   "classification": {
     "type": "unique",
-    "fields": ["Species"],
-    "fieldDelimiter": ", ",
+    "fields": ["Genus"],
+    "fieldDelimiter": ", "
   },
-  "where": "Trunk_Diameter>80",
+  "where": "Trunk_Diameter<15",
   "f": "pjson"
 }

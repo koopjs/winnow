@@ -1,8 +1,8 @@
 {
   "classification": {
-    "type": "class",
+    "type": "classes",
     "field": "Trunk_Diameter",
-    "method": "naturalBreaks",
+    "method": "equalInterval",
     "breakCount": 7,
     "norm": "log"
   },

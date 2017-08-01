@@ -169,15 +169,17 @@ function normalizeProjection (options) {
 
 function normalizeClassification (options) {
   if (options.classification) return options.classification
-  else if (options.classificationDef) return geoservicesClassification(options)
+  else if (options.classificationDef) return geoservicesClassBreaks(options)
   else return undefined
 }
 
-function geoservicesClassification (options) {
+// TODO: normalize incoming classification
+
+function geoservicesClassBreaks (options) {
   const inClass = options.classificationDef
   if (inClass.type === 'classBreaksDef') {
     return {
-      type: inClass.type,
+      type: 'classes',
       field: inClass.classificationField,
       method: normalizeGeoservicesMethod(inClass.classificationMethod),
       breakCount: inClass.breakCount,
@@ -186,7 +188,7 @@ function geoservicesClassification (options) {
     }
   } else if (inClass.type === 'uniqueValueDef') {
     return {
-      type: inClass.type,
+      type: 'unique',
       fields: inClass.uniqueValueFields,
       delimiter: inClass.fieldDelimiter
     }
