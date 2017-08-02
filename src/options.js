@@ -120,7 +120,7 @@ function normalizeGeometry (options) {
   }
   if (Array.isArray(geometry)) {
     geometry = transformArray(geometry)
-  } else if (geometry.xmin) {
+  } else if (geometry.xmin || geometry.xmin === 0) {
     geometry = transformEnvelope(geometry)
   } else if (geometry.x || geometry.rings || geometry.paths || geometry.points) {
     geometry = convertFromEsri(geometry)
