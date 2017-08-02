@@ -1,5 +1,4 @@
-// this should really be a built-in called: Math.bump()
-function calculateMinValue (value, index, array) {
+module.exports = function (value, index, array) {
   // TODO: determine how to fix rounding on large decimal places (e.g., [1 - 2.33334], [2.3333*6* - 3])
   let minValue = array[index - 1] || array[0]
   if (isNaN(minValue)) throw new Error('Previous break value is non-numeric')
@@ -17,5 +16,3 @@ function getPrecision (a) {
   while (Math.round(a * e) / e !== a) { e *= 10; p++ }
   return p
 }
-
-module.exports = { calculateMinValue }

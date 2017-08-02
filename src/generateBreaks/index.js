@@ -3,7 +3,7 @@ const Classifier = require('classybrew')
 const Options = require('../options')
 const Query = require('../query')
 const { getFieldValues, normalizeClassBreaks } = require('./normalizeClassBreaks')
-const { calculateMinValue } = require('./utils')
+const calculateMinValue = require('./utils')
 
 function calculateClassBreaks (features, classification) {
   const values = getFieldValues(features, classification.field)
