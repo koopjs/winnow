@@ -18,8 +18,7 @@ function normalizeGeoservicesClassBreaks (options) {
   } else if (inClass.type === 'uniqueValueDef') {
     return {
       type: 'unique',
-      fields: inClass.uniqueValueFields,
-      delimiter: inClass.fieldDelimiter
+      fields: inClass.uniqueValueFields
     }
   } else throw new Error('Input classification type invalid:' + inClass.type)
 }
