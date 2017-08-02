@@ -1,5 +1,5 @@
 function normalizeClassification (options) {
-  if (options.classification) return options.classification // TODO: normalize incoming classification
+  if (options.classification) return options.classification // TODO: ? normalize standard classification
   else if (options.classificationDef) return normalizeGeoservicesClassBreaks(options)
   else return undefined
 }

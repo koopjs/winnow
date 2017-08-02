@@ -28,7 +28,9 @@ function classifyClassBreaks (values, features, classification) {
     case 'naturalBreaks': return classifier.classify('jenks')
     case 'quantile': return classifier.classify('quantile')
     case 'geomInterval': throw new Error('Classification method not yet supported')
-    case 'std': return classifier.classify('std_deviation') // TODO: throw an error if a user tries to include an interval
+    case 'std':
+      if (classification.standardDeviationInterval) throw new Error('STD interval not supported')
+      return classifier.classify('std_deviation')
     default: throw new Error('invalid classificationMethod: ' + classification.method)
   }
 }
