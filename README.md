@@ -145,7 +145,7 @@ An object for classification aggregation. Classification ouputs an array of brea
 ##### `Class Breaks`
 _Class Breaks_ is used to classify numeric data based on a number of breaks and a statistical method. Features can also be normalized before being classified.
 
-```json
+```js
 {
   *type: 'classes',
   *field: '<field1>',
@@ -160,7 +160,7 @@ e.g. An example feature collection has a field called _field1_ ranging in value 
 
 Input:
 
-```json
+```js
 {
   type: 'classes',
   field: 'field1',
@@ -171,7 +171,7 @@ Input:
 
 Output (array of class intervals):
 
-```json
+```js
 [ [0-5],
   [6-11],
   [12-17],
@@ -182,7 +182,7 @@ Output (array of class intervals):
 ##### `Unique Value`
 _Unique Value_ is used to classify data based on a unique field(s). The output is an array of objects for each unique value combination. Each object contains an instance count, and the classifying unqiue field names and values.
 
-```json
+```js
 {
   *type: 'unique',
   *fields: ['<field1>', '<field2>', '<field3>'] // up to three fields
@@ -194,7 +194,7 @@ e.g. An example feature collection has unique fields called _employeeID_ and _cu
 
 Input:
 
-```json
+```js
 {
   type: 'unique',
   fields: ['employeeID', 'customerID']
@@ -203,7 +203,7 @@ Input:
 
 Output (array of instance objects):
 
-```json
+```js
 [
   {count: 3, employeeID: 'A', customerID: 'M'},
   {count: 1, employeeID: 'A', customerID: 'N'},
