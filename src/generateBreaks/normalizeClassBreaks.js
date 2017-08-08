@@ -1,12 +1,18 @@
 'use strict'
+const _ = require('lodash')
+
 function getFieldValues (features, field) {
-  return features.map((feature, index) => {
+  const values = features.map((feature, index) => {
     const properties = feature.properties
     const key = Object.keys(properties).filter(property => { return property === field })
-    const value = Number(properties[key])
-    if (isNaN(value)) throw new TypeError('Cannot use values from unrecognized or non-numeric field')
-    return value
+    let value = properties[key]
+    if (value !== null && value !== undefined && value !== '') {
+      value = Number(value)
+      if (typeof value !== 'number') throw new TypeError('Cannot use values from unrecognized or non-numeric field: ' + value)
+      return value
+    }
   })
+  return _.without(values, null, undefined, '')
 }
 
 function normalizeClassBreaks (values, features, classification) {

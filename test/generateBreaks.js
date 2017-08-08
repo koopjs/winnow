@@ -9,6 +9,7 @@ const multipleUnique = require('./fixtures/generateBreaks/multipleUnqiue.json')
 const geoServicesClassBreaks = require('./fixtures/generateBreaks/geoServicesClassBreaks.json')
 const geoServicesUniqueValue = require('./fixtures/generateBreaks/geoServicesUniqueValue.json')
 
+/* class breaks */
 test('create class breaks', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
@@ -136,6 +137,29 @@ test('unacceptable classification method', t => {
   t.throws(function () { winnow.query(treesSubset, options) })
 })
 
+test('handle unacceptable field with different value types', t => {
+  t.plan(1)
+  const options = _.cloneDeep(classBreaks)
+  options.where = 'House_Number>200'
+  const data = _.cloneDeep(treesSubset)
+  data.features[2].properties.Trunk_Diameter = 'Invalid Value'
+  t.throws(function () { winnow.query(data, options) })
+})
+
+test('remove null values during classification', t => {
+  t.plan(3)
+  const options = _.cloneDeep(classBreaks)
+  options.where = 'House_Number>200'
+  const data = _.cloneDeep(treesSubset)
+  data.features[1].properties.Trunk_Diameter = null
+  data.features[19].properties.Trunk_Diameter = null
+  const results = winnow.query(data, options)
+  t.equal(results.length, 7)
+  t.deepEqual(results[1], [3.4285714285714284, 6.857142857142857])
+  t.deepEqual(results[6], [20.57142857142858, 24])
+})
+
+/* unique values */
 test('create unique values', t => {
   t.plan(5)
   const options = _.cloneDeep(uniqueValue)
