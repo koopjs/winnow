@@ -153,7 +153,7 @@ function jsonify (token, next, options) {
   }
   const selector = options.esri ? 'attributes' : 'properties'
   if (next) next = next.toLowerCase()
-  var field = token.replace(/'|"/g, '')
+  const field = token.replace(/'|"/g, '')
   if (OPERATORS.indexOf(next) > -1 && field !== '1') return `${leading}${selector}->\`${field}\`${trailing}`
   else return leading + token + trailing
 }
