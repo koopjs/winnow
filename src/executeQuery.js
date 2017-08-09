@@ -73,7 +73,7 @@ function esriFy (result, options, i) {
   return result
 }
 
-function finishQuery (features, options, query) {
+function finishQuery (features, options) {
   if (options.groupBy) {
     return features
   } else if (options.aggregates) {
