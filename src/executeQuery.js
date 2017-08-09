@@ -37,7 +37,7 @@ function limitQuery (features, query, options) {
     return filtered.length === options.limit
   })
   if (options.offset) filtered = filtered.slice(options.offset)
-  return finishQuery(filtered, options, query)
+  return finishQuery(filtered, options)
 }
 
 function standardQuery (features, query, options) {
