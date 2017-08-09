@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+* properly handles offset in limitQuery
+
 ## [1.11.1] 08-03-2017
 ### Fixed
 * added is sql operator

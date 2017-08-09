@@ -275,6 +275,19 @@ test('With a where and a geometry option', t => {
   run('trees', options, 2315, t)
 })
 
+test('with a where, geometry, limit and offset option', t => {
+  const options = {
+    where: "Genus like '%Quercus%'",
+    geometry: {
+      type: 'Polygon',
+      coordinates: [[[-118.163, 34.162], [-118.108, 34.162], [-118.108, 34.173], [-118.163, 34.173], [-118.163, 34.162]]]
+    },
+    limit: 4,
+    offset: 1
+  }
+  run('trees', options, 4, t)
+})
+
 test('With an envelope, an inSR and an outSR', t => {
   const options = {
     f: 'json',
