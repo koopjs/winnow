@@ -3,18 +3,27 @@ const Classifier = require('classybrew')
 const Options = require('../options')
 const Query = require('../query')
 const { getFieldValues, normalizeClassBreaks } = require('./normalizeClassBreaks')
-const calculateMinValue = require('./utils')
+const { adjustIntervalValue, calculateStdDevIntervals } = require('./utils')
 
 function calculateClassBreaks (features, classification) {
+  if (!classification.method) throw new Error('must supply classification.method')
+  if (!classification.breakCount) throw new Error('must supply classification.breakCount')
+
+  let isStddev = false
+  if (classification.method === 'stddev') isStddev = true
+
   const values = getFieldValues(features, classification.field)
   // make sure there aren't more breaks than values
   if (classification.breakCount > values.length) classification.breakCount = values.length
+
   // calculate break ranges [ [a-b], [b-c], ...] from input values
   return classifyClassBreaks(values, features, classification)
     .map((value, index, array) => {
       // change minValue so break ranges don't overlap
-      return [calculateMinValue(value, index, array), value]
-    }).slice(1) // remove first range
+      return adjustIntervalValue(value, index, array, isStddev)
+    })
+    .slice(isStddev ? 0 : 1) // if not stddev, remove first interval
+    .filter((currBreak) => { return currBreak !== null }) // remove nulls when stddev
 }
 
 function classifyClassBreaks (values, features, classification) {
@@ -28,9 +37,7 @@ function classifyClassBreaks (values, features, classification) {
     case 'naturalBreaks': return classifier.classify('jenks')
     case 'quantile': return classifier.classify('quantile')
     case 'geomInterval': throw new Error('Classification method not yet supported')
-    case 'std':
-      if (classification.standardDeviationInterval) throw new Error('STD interval not supported')
-      return classifier.classify('std_deviation')
+    case 'stddev': return calculateStdDevIntervals(values, classification)
     default: throw new Error('invalid classificationMethod: ' + classification.method)
   }
 }

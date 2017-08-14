@@ -9,7 +9,7 @@ function create (options) {
   const where = Where.createClause(options)
   const geomFilter = Geometry.createClause(options)
   const order = Order.createClause(options)
-  if (options.where || options.geometry) query += ' WHERE '
+  if ((options.where) || options.geometry) query += ' WHERE '
   if (options.where) query += where
   if (options.geometry && !where) query += geomFilter
   if (options.geometry && where) query += ` AND ${geomFilter}`

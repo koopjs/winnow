@@ -85,6 +85,21 @@ test('classify using quantile', t => {
   t.deepEqual(results[6], [13, 13])
 })
 
+test('classify using standard deviation', t => {
+  t.plan(6)
+  const options = _.cloneDeep(classBreaks)
+  options.classification.method = 'stddev'
+  options.classification.stddev_intv = 1
+  // options.classification.breakCount = 2
+  const results = winnow.query(treesSubset, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
+  t.equal(results.length, 15)
+  t.deepEqual(results[0], [-27.007608, -22.523262])
+  t.deepEqual(results[7], [4.382826, 8.867174])
+  t.deepEqual(results[14], [35.773262, 40.257608])
+})
+
 test('normalize by field', t => {
   t.plan(5)
   const options = _.cloneDeep(classBreaks)
@@ -147,16 +162,20 @@ test('handle unacceptable field with different value types', t => {
 })
 
 test('remove null values during classification', t => {
-  t.plan(3)
+  t.plan(5)
   const options = _.cloneDeep(classBreaks)
-  options.where = 'House_Number>200'
   const data = _.cloneDeep(treesSubset)
-  data.features[1].properties.Trunk_Diameter = null
-  data.features[19].properties.Trunk_Diameter = null
+  data.features[0].properties.Trunk_Diameter = null
+  data.features[17].properties.Trunk_Diameter = null
+  data.features[18].properties.Trunk_Diameter = null
+  data.features[21].properties.Trunk_Diameter = null
   const results = winnow.query(data, options)
+  t.equal(Array.isArray(results), true)
+  t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 7)
-  t.deepEqual(results[1], [3.4285714285714284, 6.857142857142857])
-  t.deepEqual(results[6], [20.57142857142858, 24])
+  t.deepEqual(results[0], [1, 2.571428571428571])
+  t.deepEqual(results[6], [10.428571428571427, 12])
+  t.end()
 })
 
 /* unique values */
