@@ -89,8 +89,8 @@ function normalizeOffset (options) {
 
 function normalizeProjection (options) {
   let projection
-  // WFS
-  if (options.srsName) return options.srsName
+  // WFS :)
+  if (options.srsname || options.srsName) return options.srsname || options.srsName
   // Winnow native
   if (options.projection) {
     projection = options.projection
