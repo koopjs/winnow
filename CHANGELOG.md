@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Fixed
-* properly handles offset in limitQuery
+* properly handle offset
 
 ## [1.12.0] - 08-14-2017
 ### Added

@@ -36,7 +36,6 @@ function limitQuery (features, query, options) {
     if (result) filtered.push(result)
     return filtered.length === options.limit
   })
-  if (options.offset) filtered = filtered.slice(options.offset)
   return finishQuery(filtered, options)
 }
 
@@ -74,6 +73,10 @@ function esriFy (result, options, i) {
 }
 
 function finishQuery (features, options) {
+  if (options.offset) {
+    if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
+    features = features.slice(options.offset)
+  }
   if (options.groupBy) {
     return features
   } else if (options.aggregates) {
