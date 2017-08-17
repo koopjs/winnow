@@ -138,6 +138,13 @@ test('normalize by total', t => {
   t.deepEqual(results[6], [10.51212938005391, 12.264150943396226])
 })
 
+test('unrecognized classification field', t => {
+  t.plan(1)
+  const options = _.cloneDeep(classBreaks)
+  options.classification.field = 'UNRECOGNIZED_FIELD'
+  t.throws(function () { winnow.query(treesSubset, options) })
+})
+
 test('unacceptable classification field', t => {
   t.plan(1)
   const options = _.cloneDeep(classBreaks)

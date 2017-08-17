@@ -2,13 +2,14 @@
 const _ = require('lodash')
 
 function getFieldValues (features, field) {
+  if (!(field in features[0].properties)) throw new Error('Cannot use values from unrecognized field: ' + field)
   const values = features.map((feature, index) => {
     const properties = feature.properties
     const key = Object.keys(properties).filter(property => { return property === field })
     let value = properties[key]
     if (value !== null && value !== undefined && value !== '') {
       value = Number(value)
-      if (typeof value !== 'number') throw new TypeError('Cannot use values from unrecognized or non-numeric field: ' + value)
+      if (typeof value !== 'number') throw new TypeError('Cannot use values from non-numeric field: ' + value)
       return value
     }
   })
