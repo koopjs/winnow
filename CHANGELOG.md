@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 ## Fixed
 * handle NaN, null, undefined, '' values when classifying
+* properly handle offset
 
 ## [1.12.0] - 08-14-2017
 ### Added
