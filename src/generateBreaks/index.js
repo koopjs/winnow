@@ -9,21 +9,19 @@ function calculateClassBreaks (features, classification) {
   if (!classification.method) throw new Error('must supply classification.method')
   if (!classification.breakCount) throw new Error('must supply classification.breakCount')
 
-  let isStddev = false
-  if (classification.method === 'stddev') isStddev = true
-
+  const isStdDev = classification.method === 'stddev'
   const values = getFieldValues(features, classification.field)
-  // make sure there aren't more breaks than values
+  // limit break count to num values
   if (classification.breakCount > values.length) classification.breakCount = values.length
 
   // calculate break ranges [ [a-b], [b-c], ...] from input values
   return classifyClassBreaks(values, features, classification)
     .map((value, index, array) => {
-      // change minValue so break ranges don't overlap
-      return adjustIntervalValue(value, index, array, isStddev)
+      // adjust min or max interval value so break ranges don't overlap [ [0-1], [1.1-2], ...]
+      return adjustIntervalValue(value, index, array, isStdDev)
     })
-    .slice(isStddev ? 0 : 1) // if not stddev, remove first interval
-    .filter((currBreak) => { return currBreak !== null }) // remove nulls when stddev
+    .slice(isStdDev ? 0 : 1) // if not stddev classification, remove first interval
+    .filter((currBreak) => { return currBreak !== null }) // remove null breaks within stddev classification
 }
 
 function classifyClassBreaks (values, features, classification) {

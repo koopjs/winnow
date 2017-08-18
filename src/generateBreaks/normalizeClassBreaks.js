@@ -2,7 +2,7 @@
 const _ = require('lodash')
 
 function getFieldValues (features, field) {
-  if (!(field in features[0].properties)) throw new Error('Cannot use values from unrecognized field: ' + field)
+  if (!(field in features[0].properties)) throw new Error('Classification field missing from first feature: ' + field)
   const values = features.map((feature, index) => {
     const properties = feature.properties
     const key = Object.keys(properties).filter(property => { return property === field })

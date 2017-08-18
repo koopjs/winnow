@@ -18,7 +18,6 @@ Winnow.query = function (input, options = {}) {
     features = input.features
   }
   options = Options.prepare(options, features)
-  if (options.where === '1=1') delete options.where
 
   const query = Query.create(options)
   if (process.env.NODE_ENV === 'test') console.log(query, options)
