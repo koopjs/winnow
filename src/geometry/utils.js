@@ -99,7 +99,20 @@ function arraysIntersectArrays (a, b) {
   return false
 }
 
-// ported from ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L159-166
+// ported from terraformer-arcgis-parser.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L502-L512
+function coordinatesContainPoint (coordinates, point) {
+  var contains = false;
+  for (var i = -1, l = coordinates.length, j = l - 1; ++i < l; j = i) {
+    if (((coordinates[i][1] <= point[1] && point[1] < coordinates[j][1]) ||
+         (coordinates[j][1] <= point[1] && point[1] < coordinates[i][1])) &&
+        (point[0] < (((coordinates[j][0] - coordinates[i][0]) * (point[1] - coordinates[i][1])) / (coordinates[j][1] - coordinates[i][1])) + coordinates[i][0])) {
+      contains = !contains;
+    }
+  }
+  return contains;
+}
+
+// ported from ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L159-L166
 function coordinatesContainCoordinates (outer, inner) {
   var intersects = arrayIntersectsArray(outer, inner);
   var contains = coordinatesContainPoint(outer, inner[0]);
@@ -137,5 +150,6 @@ module.exports = {
   closeRing,
   orientRings,
   arraysIntersectArrays,
+  coordinatesContainPoint,
   coordinatesContainCoordinates
 }
