@@ -114,7 +114,7 @@ function coordinatesContainPoint (coordinates, point) {
 
 // ported from ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L159-L166
 function coordinatesContainCoordinates (outer, inner) {
-  var intersects = arrayIntersectsArray(outer, inner);
+  var intersects = arraysIntersectArrays(outer, inner);
   var contains = coordinatesContainPoint(outer, inner[0]);
   if (!intersects && contains) {
     return true;
