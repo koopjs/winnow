@@ -48,7 +48,7 @@ function pad (sql) {
   const padded = operators.reduce(function (statement, op) {
     const pad = statement.replace(op.regex, ` ${op.string} `)
     // ugly hack because javascripts haz no lookbehind
-    return pad.replace(/> =/, '>=').replace(/< =/, '<=').replace(/i like/, 'ilike')
+    return pad.replace(/> =/g, '>=').replace(/< =/g, '<=').replace(/i like/g, 'ilike')
   }, sql)
   return padded.replace(/\s\s/g, ' ')
 }
