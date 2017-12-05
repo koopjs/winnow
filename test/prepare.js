@@ -23,7 +23,7 @@ test('compiling a complex query', t => {
 
 test('compiling with several and statements', t => {
   try {
-    t.ok(Winnow.prepareQuery({where: 'COMPTMENT >= 3010 AND COMPTMENT <= 3155 AND FOREST >= 517 AND FOREST <= 517'}))
+    t.ok(Winnow.prepareQuery({where: 'ELEVATION >= 1165 AND ELEVATION <= 4365 AND POP1990 >= 8247 AND POP1990 <= 5700236'}))
     t.end()
   } catch (e) {
     t.fail(e)
