@@ -88,6 +88,9 @@ function finishQuery (features, options) {
     if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
     features = features.slice(options.offset)
   }
+  if (options.returnGeometry === false) {
+    features.forEach(function removeGeometry (feature) { return delete feature.geometry })
+  }
   if (options.groupBy) {
     return features
   } else if (options.aggregates) {
