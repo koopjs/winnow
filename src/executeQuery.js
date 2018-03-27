@@ -32,6 +32,11 @@ function limitQuery (features, query, options) {
     if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
     options.limit += options.offset
   }
+
+  if (options.returnGeometry === false) {
+    stripGeometry(features, options)
+  }
+
   features.some((feature, i) => {
     const result = processQuery(feature, query, options, i)
     if (result) filtered.push(result)
@@ -51,6 +56,9 @@ function limitQuery (features, query, options) {
 }
 
 function standardQuery (features, query, options) {
+  if (options.returnGeometry === false) {
+    stripGeometry(features, options)
+  }
   const filtered = features.reduce((filteredFeatures, feature, i) => {
     const result = processQuery(feature, query, options, i)
     if (result) filteredFeatures.push(result)
@@ -83,11 +91,21 @@ function esriFy (result, options, i) {
   return result
 }
 
+function stripGeometry (features, options) {
+  let start = options.offset || 0
+  let limit = options.limit || features.length
+
+  for (let i = start; i < limit; i++) {
+    delete features[i].geometry
+  }
+}
+
 function finishQuery (features, options) {
   if (options.offset) {
     if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
     features = features.slice(options.offset)
   }
+
   if (options.groupBy) {
     return features
   } else if (options.aggregates) {
