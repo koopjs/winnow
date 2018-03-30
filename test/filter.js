@@ -508,6 +508,13 @@ test('with an esri-style date query', t => {
   run('permits', options, 211, t)
 })
 
+test('with a timestamp query', t => {
+  const options = {
+    where: "ISSUE_DATE >= timestamp '2017-01-05'"
+  }
+  run('permits', options, 211, t)
+})
+
 function run (data, options, expected, t) {
   t.plan(1)
   const features = require(`./fixtures/${data}.json`).features

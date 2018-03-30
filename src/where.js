@@ -101,6 +101,18 @@ function handleValue(node, options) {
   return value
 }
 
+
+/**
+ * Convert a timestamp node to its iso8601 string representation.
+ *
+ * @param  {object} node    AST value node
+ * @param  {object} options winnow options
+ * @return {string}         value string
+ */
+function handleTimestampValue(node, options) {
+  return `'${new Date(node.value).toISOString()}'`
+}
+
 /**
  * Traverse a SQL AST and return its string representation
  * @param  {object} node    AST node
@@ -127,6 +139,8 @@ function traverse(node, options) {
     case 'null':
     case 'bool':
       return handleValue(node, options)
+    case 'timestamp':
+      return handleTimestampValue(node, options)
     default:
       throw new Error('Unrecognized AST node: \n' + JSON.stringify(node, null, 2))
    }
