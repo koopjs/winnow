@@ -16,6 +16,8 @@ function handleExpr(node, options) {
   } else if (node.operator === '=' && node.left.value === 1 && node.right.value === 1) {
     // a special case related to arcgis server
     return '1=1'
+  } else if (node.operator === 'BETWEEN') {
+    expr = traverse(node.left, options) + " " + (node.operator) + " " + (traverse(node.right.value[0], options)) + "AND" + (traverse(node.right.value[1], options))
   } else {
     // store the column node for value decoding
 
