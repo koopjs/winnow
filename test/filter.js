@@ -152,7 +152,7 @@ test('With an esri style envelope', t => {
   run('trees', options, 29744, t)
 })
 
-test('With an esri style envelope and a missing', t => {
+test('With an esri style envelope and features with missing geometry', t => {
   const options = {
     outSr: 4326,
     inSr: 4326,
