@@ -80,7 +80,18 @@ test('adding an object id', t => {
   }
   const fixture = _.cloneDeep(geojson)
   const result = Winnow.query(fixture, options)
-  t.equal(result.features[0].attributes.OBJECTID, 0)
+  t.equal(typeof result.features[0].attributes.OBJECTID, 'number')
+  t.end()
+})
+
+test('adding an object id, multiple queries should produce differnt ids', t => {
+  const options = {
+    toEsri: true
+  }
+  const fixture = _.cloneDeep(geojson)
+  const result1 = Winnow.query(fixture, options)
+  const result2 = Winnow.query(fixture, options)
+  t.notEqual(result1.features[0].attributes.OBJECTID, result2.features[0].attributes.OBJECTID)
   t.end()
 })
 

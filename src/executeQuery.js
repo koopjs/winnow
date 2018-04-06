@@ -28,12 +28,15 @@ function aggregateQuery (features, query, options) {
 function limitQuery (features, query, options) {
   let filtered = []
   let limitExceeded = false
+  // Get a prefix for constructing an OBJECTID
+  let randomIntPrefix = getRandomIntPrefix(options.limit)
+
   if (options.offset) {
     if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
     options.limit += options.offset
   }
   features.some((feature, i) => {
-    const result = processQuery(feature, query, options, i)
+    const result = processQuery(feature, query, options, randomIntPrefix, i)
     if (result) filtered.push(result)
     if (filtered.length === (options.limit + 1)) {
       limitExceeded = true
@@ -51,23 +54,25 @@ function limitQuery (features, query, options) {
 }
 
 function standardQuery (features, query, options) {
+  // Get a prefix for constructing an OBJECTID
+  let randomIntPrefix = getRandomIntPrefix(features.length)
   const filtered = features.reduce((filteredFeatures, feature, i) => {
-    const result = processQuery(feature, query, options, i)
+    const result = processQuery(feature, query, options, randomIntPrefix, i)
     if (result) filteredFeatures.push(result)
     return filteredFeatures
   }, [])
   return finishQuery(filtered, options)
 }
 
-function processQuery (feature, query, options, i) {
+function processQuery (feature, query, options, randomIntPrefix, objectId) {
   const params = Query.params([feature], options)
   const result = sql(query, params)[0]
 
-  if (result && options.toEsri) return esriFy(result, options, i)
+  if (result && options.toEsri) return esriFy(result, options, randomIntPrefix, objectId)
   else return result
 }
 
-function esriFy (result, options, i) {
+function esriFy (result, options, randomIntPrefix, objectId) {
   if (options.dateFields.length) {
     // mutating dates has down stream consequences if the data is reused
     result.attributes = _.cloneDeep(result.attributes)
@@ -77,8 +82,11 @@ function esriFy (result, options, i) {
   }
 
   const metadata = (options.collection && options.collection.metadata) || {}
+
+  // If the feature doesn't come with a consistent OBJECTID, then give it one likely to
+  // vary across requests from same client
   if (!metadata.idField) {
-    result.attributes.OBJECTID = i
+    result.attributes.OBJECTID = Number(`${randomIntPrefix}${objectId}`)
   }
   return result
 }
@@ -99,6 +107,27 @@ function finishQuery (features, options) {
   } else {
     return features
   }
+}
+
+/**
+ * Create a integer prefix (as string) that will not allow a final concatenated
+ * value greater than OBJECTID limit of 2147483647
+ * @param {*} maxIteratorValue the max value of iterator to which the prefix will be concatenated
+ */
+function getRandomIntPrefix (maxIteratorValue) {
+  // Get the number of digits in feature count
+  const digits = maxIteratorValue.toString().length
+
+  // Set value for max OBJECTID (from ArcGIS, signed 32-bit integer)
+  const MAXID = (2147483647).toString()
+
+  // Calculate the largest allowable prefix for this set of features by
+  // stripping place values need for the ID concatenation; then minus 1
+  // to ensure the final concatenation is less then the MAXID
+  const maxPrefix = Number(MAXID.substring(0, MAXID.length - digits)) - 1
+
+  // Select a random number from 0 to maxPrefix and return as string
+  return Math.floor(Math.random() * maxPrefix).toString()
 }
 
 module.exports = { breaksQuery, aggregateQuery, limitQuery, standardQuery, finishQuery }
