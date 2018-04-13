@@ -34,7 +34,7 @@ function limitQuery (features, query, options) {
     options.limit += options.offset
   }
   features.some((feature, i) => {
-    const result = processQuery(feature, query, options, i)
+    const result = processQuery(feature, query, options)
     if (result) filtered.push(result)
     if (filtered.length === (options.limit + 1)) {
       limitExceeded = true
@@ -53,22 +53,22 @@ function limitQuery (features, query, options) {
 
 function standardQuery (features, query, options) {
   const filtered = features.reduce((filteredFeatures, feature, i) => {
-    const result = processQuery(feature, query, options, i)
+    const result = processQuery(feature, query, options)
     if (result) filteredFeatures.push(result)
     return filteredFeatures
   }, [])
   return finishQuery(filtered, options)
 }
 
-function processQuery (feature, query, options, i) {
+function processQuery (feature, query, options) {
   const params = Query.params([feature], options)
   const result = sql(query, params)[0]
 
-  if (result && options.toEsri) return esriFy(result, options, i)
+  if (result && options.toEsri) return esriFy(result, options)
   else return result
 }
 
-function esriFy (result, options, i) {
+function esriFy (result, options) {
   const idField = options.collection && options.collection.metadata && options.collection.metadata.idField
 
   if (options.dateFields.length) {
