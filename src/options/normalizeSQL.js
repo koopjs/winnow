@@ -17,9 +17,20 @@ function normalizeDate (where) {
  * @param {Object} options - object that may contain 'fields' or 'outFields' property
  */
 function normalizeFields (options) {
-  const fields = options.fields || options.outFields
+  let fields = options.fields || options.outFields
+
+  // TODO: Clearer set of if statements
   if (fields === '*') return undefined
-  if (typeof fields === 'string' || fields instanceof String) return fields.split(',')
+  if (typeof fields === 'string' || fields instanceof String) fields = fields.split(',')
+  if (fields instanceof Array && options.toEsri) {
+    // If idField has been set for use as OBJECTID, we must replace OBJECTID with idField in the query fields
+    let idField = options.collection && options.collection.metadata && options.collection.metadata.idField
+    let objectIdIndex = fields.findIndex((i) => { return i === 'OBJECTID' })
+    if (objectIdIndex > -1 && idField) {
+      fields[objectIdIndex] = idField
+    }
+    return fields
+  }
   if (fields instanceof Array) return fields
   return undefined
 }
