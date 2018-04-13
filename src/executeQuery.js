@@ -1,4 +1,5 @@
 'use strict'
+const farmhash = require('farmhash')
 const sql = require('./sql')
 const Query = require('./query')
 const { calculateClassBreaks, calculateUniqueValueBreaks } = require('./generateBreaks/index')
@@ -68,6 +69,8 @@ function processQuery (feature, query, options, i) {
 }
 
 function esriFy (result, options, i) {
+  const idField = options.collection && options.collection.metadata && options.collection.metadata.idField
+
   if (options.dateFields.length) {
     // mutating dates has down stream consequences if the data is reused
     result.attributes = _.cloneDeep(result.attributes)
@@ -76,9 +79,14 @@ function esriFy (result, options, i) {
     })
   }
 
-  const metadata = (options.collection && options.collection.metadata) || {}
-  if (!metadata.idField) {
-    result.attributes.OBJECTID = i
+  // If the idField for the model set and is not already called OBJECTID, use its value as OBJECTID
+  if (idField && idField !== 'OBJECTID') {
+    result.attributes.OBJECTID = result.attributes[idField]
+    delete result.attributes[idField]
+  } else if (!idField) {
+    // Create an OBJECTID by creating a numeric hash from the stringified feature
+    // Note the possibility of OBJECTID collisions with this method
+    result.attributes.OBJECTID = createIntHash(JSON.stringify(result))
   }
   return result
 }
@@ -99,6 +107,17 @@ function finishQuery (features, options) {
   } else {
     return features
   }
+}
+
+/**
+ * Create integer hash in range of 0 - 2147483647 from string 
+ * @param {*} inputStr - any string 
+ */
+function createIntHash (inputStr) {
+  // Hash to 32 bit unsigned integer
+  const hash = farmhash.hash32(inputStr)
+  // Normalize to range of postive values of signed integer
+  return Math.round((hash / 4294967295) * (2147483647))
 }
 
 module.exports = { breaksQuery, aggregateQuery, limitQuery, standardQuery, finishQuery }
