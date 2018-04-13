@@ -70,7 +70,6 @@ test('checking if an object id exists', t => {
   const fixture = _.cloneDeep(oidFeature)
   const result = Winnow.query(fixture, options)
   t.equal(result.features[0].attributes.objectid, 1)
-  t.equal(result.metadata.idField, 'objectid')
   t.end()
 })
 
@@ -80,7 +79,7 @@ test('adding an object id', t => {
   }
   const fixture = _.cloneDeep(geojson)
   const result = Winnow.query(fixture, options)
-  t.equal(result.features[0].attributes.OBJECTID, 0)
+  t.equal(result.features[0].attributes.OBJECTID, 971640159)
   t.end()
 })
 
