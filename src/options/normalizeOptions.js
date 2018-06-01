@@ -68,7 +68,7 @@ function normalizeGeometry (options) {
   } else if (geometry.x || geometry.rings || geometry.paths || geometry.points) {
     geometry = convertFromEsri(geometry)
   }
-  const inSR = bboxCRS || normalizeInSR(options)
+  const inSR = bboxCRS || options.inSR
   if (inSR) geometry.coordinates = projectCoordinates(geometry.coordinates, { inSR, outSR: 'EPSG:4326' })
   return geometry
 }
@@ -76,7 +76,7 @@ function normalizeGeometry (options) {
 function normalizeInSR (options) {
   let SR
   if (options.inSR) SR = options.inSR
-  else if (options.geometry.spatialReference) {
+  else if (_.has(options, 'geometry.spatialReference')) {
     if (/WGS_1984_Web_Mercator_Auxiliary_Sphere/.test(options.geometry.spatialReference.wkt)) {
       SR = 3857
     } else {
@@ -122,5 +122,6 @@ module.exports = {
   normalizeLimit,
   normalizeGeometry,
   normalizeOffset,
-  normalizeProjection
+  normalizeProjection,
+  normalizeInSR
 }
