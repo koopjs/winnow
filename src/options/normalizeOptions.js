@@ -74,6 +74,11 @@ function normalizeGeometry (options) {
   return geometry
 }
 
+/**
+ * Normalize the input spatial reference. Look on options.geometry object first.  If spatial reference not present, look in options.inSR
+ * @param {object} options options object that may or may not have "geometry" and "inSR" properties
+ * @returns {string} formatted string, "EPSG:<wkid>"
+ */
 function normalizeInSR (options) {
   let spatialReference
   // Look for in geometry option's spatial reference
