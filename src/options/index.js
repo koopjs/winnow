@@ -13,7 +13,8 @@ const {
   normalizeGeometry,
   normalizeOffset,
   normalizeProjection,
-  normalizeInSR } = require('./normalizeOptions')
+  normalizeInSR
+} = require('./normalizeOptions')
 const { normalizeClassification } = require('./normalizeClassification')
 
 function prepare (options, features) {

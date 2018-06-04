@@ -66,3 +66,38 @@ test('normalize input SR with inSR=102100', t => {
   const inSR = normalizeInSR(options)
   t.equal(inSR, 'EPSG:3857')
 })
+
+test('normalize input SR with inSR={wkid: 102100}', t => {
+  t.plan(1)
+  const options = { inSR: { wkid: 102100 } }
+  const inSR = normalizeInSR(options)
+  t.equal(inSR, 'EPSG:3857')
+})
+
+test('normalize input SR with inSR={latestWkid: 102100}', t => {
+  t.plan(1)
+  const options = { inSR: { latestWkid: 102100 } }
+  const inSR = normalizeInSR(options)
+  t.equal(inSR, 'EPSG:3857')
+})
+
+test('normalize input SR with inSR={wkid: 4629}', t => {
+  t.plan(1)
+  const options = { inSR: { wkid: 4629 } }
+  const inSR = normalizeInSR(options)
+  t.equal(inSR, 'EPSG:4629')
+})
+
+test('normalize input SR with inSR={ }', t => {
+  t.plan(1)
+  const options = { inSR: { } }
+  const inSR = normalizeInSR(options)
+  t.equal(inSR, 'EPSG:4326')
+})
+
+test('normalize input SR with  bogus inSR={wkid:9999}, default to 4326', t => {
+  t.plan(1)
+  const options = { inSR: { wkid: 9999 } }
+  const inSR = normalizeInSR(options)
+  t.equal(inSR, 'EPSG:4326')
+})
