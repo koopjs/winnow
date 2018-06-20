@@ -566,7 +566,6 @@ test('With an limit ordered option', t => {
   t.equal(filtered[0].properties.Species, 'AGRIFOLIA')
 })
 
-
 function run (data, options, expected, t) {
   t.plan(1)
   const features = require(`./fixtures/${data}.json`).features
