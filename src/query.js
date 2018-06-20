@@ -14,8 +14,12 @@ function create (options) {
   if (options.geometry && !where) query += geomFilter
   if (options.geometry && where) query += ` AND ${geomFilter}`
   if (options.order || options.orderByFields) query += order
-  if (options.limit) query += ` LIMIT ${options.limit}`
-  // if (options.offset) query += ` OFFSET ${options.offset}` // handled in executeQuery.js
+  if (options.limit && options.offset) {
+    query += ` LIMIT ${options.limit} OFFSET ${options.offset}`
+  } else {
+    if (options.limit) query += ` LIMIT ${options.limit}`
+    if (options.offset) query += ` LIMIT 99999999999 OFFSET ${options.offset}` // https://stackoverflow.com/questions/255517/mysql-offset-infinite-rows (99999999999 is max before alasql crashes)
+  }
   return query
 }
 
