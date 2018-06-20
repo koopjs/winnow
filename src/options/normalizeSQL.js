@@ -25,8 +25,15 @@ function normalizeFields (options) {
 }
 
 function normalizeOrder (options) {
-  const order = options.order || options.orderByFields
-  return typeof order === 'string' ? [order] : order
+  const orderInput = options.order || options.orderByFields
+  if (!orderInput) return
+
+  const orderArr = orderInput instanceof Array ? orderInput : orderInput.split(',')
+  return orderArr.reduce((store, orderItem) => {
+    const parsed = orderItem.split(' ')
+    store.push([parsed[0], parsed[1] || 'asc'])
+    return store
+  }, [])
 }
 
 function normalizeAggregates (options) {

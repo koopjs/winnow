@@ -98,6 +98,21 @@ function finishQuery (features, options) {
     if (options.offset >= features.length) throw new Error('OFFSET >= features length: ' + options)
     features = features.slice(options.offset)
   }
+  // Apply sort if order option is defined
+  if (!options.groupBy && options.order && options.order.length > 0) {
+    const iteratees = []
+    const orders = []
+    options.order.forEach((orderItem) => {
+      let attribute = orderItem[0]
+      let direction = orderItem[1]
+      iteratees.push((e) => {
+        if (options.toEsri) return e.attributes[attribute]
+        return e.properties[attribute]
+      })
+      orders.push(direction)
+    })
+    features = _.orderBy(features, iteratees, orders)
+  }
   if (options.groupBy) {
     return features
   } else if (options.aggregates) {
