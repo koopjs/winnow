@@ -68,16 +68,16 @@ test('prepare query with projection, sourceProjection, and geometry, then execut
   t.equal(filtered.features[0].geometry.coordinates[1], 1887939.4934484742)
 })
 
-test('prepare query with projection, sourceProjection, and geometry, then execute filter on non-4326 source data', (t) => {
+test('prepare query with projection, sourceProjection, and geometry, then execute non-4326 filter on non-4326 source data', (t) => {
   t.plan(3)
   const options = {
     geometry: {
-      xmin: -118.15738230943678,
-      ymin: 34.179713563470166,
-      xmax: -118.15718114376067,
-      ymax: 34.18019950919287,
+      xmin: 6514066.3001615712419152,
+      ymin: 1887820.5006760144606233,
+      xmax: 6514127.4193187793716788,
+      ymax: 1887997.4401315276045352,
       spatialReference: {
-        wkid: 4326
+        wkid: caStatePlaneWKT
       }
     },
     sourceDataSR: caStatePlaneWKT
