@@ -77,7 +77,7 @@ test('prepare query with projection, sourceProjection, and geometry, then execut
       xmax: 6514127.4193187793716788,
       ymax: 1887997.4401315276045352,
       spatialReference: {
-        wkid: caStatePlaneWKT
+        wkt: caStatePlaneWKT
       }
     },
     sourceDataSR: caStatePlaneWKT
