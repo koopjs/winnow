@@ -231,7 +231,7 @@ test('With an esri style envelope with xmin = 0, ans esri features', t => {
   run('startups', options, 2, t)
 })
 
-test('With an esri style envelope in a uncommon with xmin = 0, ans esri features', t => {
+test('With an esri style envelope in EPSG:102645 defined by wkt', t => {
   const options = {
     geometry: {
       xmin: 6514066.3001615712419152,

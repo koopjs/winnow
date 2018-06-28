@@ -70,7 +70,7 @@ sql.fn.project = function (geometry, projection) {
   try {
     return {
       type: geometry.type,
-      coordinates: projectCoordinates(geometry.coordinates, { targetSR: projection })
+      coordinates: projectCoordinates(geometry.coordinates, { toSR: projection })
     }
   } catch (e) {
     return null

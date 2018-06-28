@@ -71,8 +71,8 @@ function normalizeGeometry (options) {
   }
   const inSR = normalizeInSR(options)
   const geometryFilterSR = bboxCRS || inSR
-  const sourceDataSR = normalizeSourceDataSR(options.sourceDataSR)
-  if (inSR) geometry.coordinates = projectCoordinates(geometry.coordinates, { sourceSR: geometryFilterSR, targetSR: sourceDataSR })
+  const sourceSR = normalizeSourceSR(options.sourceSR)
+  if (inSR) geometry.coordinates = projectCoordinates(geometry.coordinates, { fromSR: geometryFilterSR, toSR: sourceSR })
   return geometry
 }
 
@@ -97,7 +97,7 @@ function normalizeInSR (options) {
  * @param {*} input
  * @returns {string} EPSG:<wkid> or srs WKT; defaults to EPSG:4326
  */
-function normalizeSourceDataSR (input) {
+function normalizeSourceSR (input) {
   let spatialReference = normalizeSR(input)
   if (spatialReference) return ((spatialReference.wkid) ? `EPSG:${spatialReference.wkid}` : spatialReference.wkt)
   return `EPSG:4326`
@@ -176,5 +176,5 @@ module.exports = {
   normalizeProjection,
   normalizeSR,
   normalizeInSR,
-  normalizeSourceDataSR
+  normalizeSourceSR
 }

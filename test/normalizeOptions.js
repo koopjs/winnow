@@ -1,5 +1,5 @@
 const test = require('tape')
-const { normalizeSR, normalizeInSR, normalizeSourceDataSR } = require('../src/options/normalizeOptions')
+const { normalizeSR, normalizeInSR, normalizeSourceSR } = require('../src/options/normalizeOptions')
 
 test('normalize SR with a wkid in the known list', t => {
   t.plan(1)
@@ -142,20 +142,20 @@ test('normalize input SR with  bogus inSR={wkid:9999}, default to 4326', t => {
   t.equal(inSR, `EPSG:4326`)
 })
 
-test('normalize source data SR with sourceDataSR string', t => {
+test('normalize source data SR with sourceSR string', t => {
   t.plan(1)
-  const sourceSR = normalizeSourceDataSR('4269')
+  const sourceSR = normalizeSourceSR('4269')
   t.equal(sourceSR, `EPSG:4269`)
 })
 
-test('normalize source data SR with undefined sourceDataSR', t => {
+test('normalize source data SR with undefined sourceSR', t => {
   t.plan(1)
   const options = { }
   const sourceSR = normalizeInSR(options)
   t.equal(sourceSR, `EPSG:4326`)
 })
 
-test('normalize source data SR with sourceDataSR={ }', t => {
+test('normalize source data SR with sourceSR={ }', t => {
   t.plan(1)
   const options = { inSR: { } }
   const sourceSR = normalizeInSR(options)

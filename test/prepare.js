@@ -59,7 +59,7 @@ test('prepare query with projection, sourceProjection, and geometry, then execut
         wkid: 4326
       }
     },
-    sourceDataSR: caStatePlaneWKT
+    sourceSR: caStatePlaneWKT
   }
   const query = Winnow.prepareQuery(options)
   const filtered = query(trees)
@@ -80,7 +80,7 @@ test('prepare query with projection, sourceProjection, and geometry, then execut
         wkt: caStatePlaneWKT
       }
     },
-    sourceDataSR: caStatePlaneWKT
+    sourceSR: caStatePlaneWKT
   }
   const query = Winnow.prepareQuery(options)
   const filtered = query(trees)
@@ -101,7 +101,7 @@ test('query with projection, sourceProjection, and geometry, then execute filter
         wkid: 4326
       }
     },
-    sourceDataSR: caStatePlaneWKT
+    sourceSR: caStatePlaneWKT
   }
 
   const filtered = Winnow.query(trees, options)
