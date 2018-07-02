@@ -2,21 +2,15 @@ function createClause (options) {
   const selector = options.esri ? 'attributes' : 'properties'
   const order = options.order
   if (order) {
-    const fields = order.reduce((fragment, sort) => {
-      const parts = sort.split(' ')
-      const field = parts[0]
-      let direction
-      if (parts[1]) {
-        direction = parts[1].toUpperCase()
-      } else {
-        direction = 'ASC'
-      }
+    const fields = order.map((item, i) => {
+      let field = item[0]
+      let direction = item[1].toUpperCase()
       const orderIsAgg = options.aggregates && options.aggregates.some(agg => {
         return field === agg.name
       })
-      if (orderIsAgg) return `${fragment} \`${field}\` ${direction},`
-      else return `${fragment} ${selector}->\`${field}\` ${direction},`
-    }, '').slice(0, -1)
+      if (orderIsAgg) return `\`${field}\` ${direction}`
+      else return `${selector}->\`${field}\` ${direction}`
+    }, '').join(', ')
     return ` ORDER BY ${fields}`
   } else {
     return ''
