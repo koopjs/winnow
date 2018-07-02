@@ -1,4 +1,5 @@
 const Terraformer = require('terraformer')
+const farmhash = require('farmhash')
 const transformArray = require('./geometry/transform-array')
 const convertToEsri = require('./geometry/convert-to-esri')
 const convertFromEsri = require('./geometry/convert-from-esri')
@@ -55,9 +56,18 @@ sql.fn.geohash = function (geometry = {}, precision) {
 }
 
 sql.fn.pick = function (properties, fields) {
-  fields = fields.split(',')
-  return _.pick(properties, fields)
+  const parsedFields = fields.split(',')
+  return _.pick(properties, parsedFields)
 }
+
+sql.fn.pickAndEsriFy = function (properties, geometry, fields, dateFields, idField) {
+  const parsedFields = fields.split(',')
+  const selectedProperties = _.pick(properties, parsedFields)
+  const esriProperties = esriFy(selectedProperties, geometry, dateFields, idField)
+  return esriProperties
+}
+
+sql.fn.esriFy = esriFy
 
 sql.fn.esriGeom = function (geometry) {
   if (geometry && geometry.type) {
@@ -92,4 +102,38 @@ sql.aggr.hash = function (value, obj, acc) {
   return obj
 }
 
+function esriFy (properties, geometry, dateFields, idField) {
+  const parsedDateFields = dateFields.split(',')
+  if (parsedDateFields.length) {
+    parsedDateFields.forEach(field => {
+      properties[field] = new Date(properties[field]).getTime()
+    })
+  }
+
+  idField = (idField === 'null') ? null : idField
+
+  // If the idField for the model set use its value as OBJECTID
+  if (idField) {
+    if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test' && (!Number.isInteger(properties[idField]) || properties[idField] > 2147483647)) {
+      console.warn(`WARNING: OBJECTIDs created from provider's "idField" are not integers from 0 to 2147483647`)
+    }
+    properties.OBJECTID = properties[idField]
+  } else {
+    // Create an OBJECTID by creating a numeric hash from the stringified feature
+    // Note possibility of OBJECTID collisions with this method still exists, but should be small
+    properties.OBJECTID = createIntHash(JSON.stringify({properties, geometry}))
+  }
+  return properties
+}
+
+/**
+ * Create integer hash in range of 0 - 2147483647 from string
+ * @param {*} inputStr - any string
+ */
+function createIntHash (inputStr) {
+  // Hash to 32 bit unsigned integer
+  const hash = farmhash.hash32(inputStr)
+  // Normalize to range of postive values of signed integer
+  return Math.round((hash / 4294967295) * (2147483647))
+}
 module.exports = sql

@@ -49,7 +49,11 @@ test('With a where option and a limit the same as the the filter', t => {
   }
   const result = Winnow.query(trees, options)
   const metadata = result.metadata
-  t.notOk(metadata.limitExceeded)
+  // NOTE: By shifting the limit to SQL, we can no longer be sure if # of features returned is
+  // due to LIMIT or WHERE; most likely it will be due to limit, so logic set limitExceeded to
+  // true whenever (options.limit && features.length > filtered length
+
+  t.ok(metadata.limitExceeded)
   t.end()
 })
 
@@ -96,7 +100,7 @@ test('adding an object id', t => {
   }
   const fixture = _.cloneDeep(geojson)
   const result = Winnow.query(fixture, options)
-  t.equal(result.features[0].attributes.OBJECTID, 2081706708)
+  t.equal(result.features[0].attributes.OBJECTID, 239375164)
   t.end()
 })
 

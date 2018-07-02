@@ -141,12 +141,23 @@ function normalizeSR (input) {
   }
 }
 
+/**
+ * Normalize the limit option; defaults to undefined
+ * @param {object} options
+ * @returns {integer} or undefined
+ */
 function normalizeLimit (options) {
   return options.limit || options.resultRecordCount || options.count || options.maxFeatures
 }
 
+/**
+ * Normalize the offset option. If no limit is defined, then return offset as undefined. ala-sql
+ * requires OFFSET to be paired with a LIMIT
+ * @param {object} options
+ * @returns {integer} or undefined
+ */
 function normalizeOffset (options) {
-  return options.offset || options.resultOffset
+  return (options.limit) ? (options.offset || options.resultOffset) : undefined
 }
 
 function normalizeProjection (options) {
