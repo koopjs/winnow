@@ -583,6 +583,19 @@ test('with a between query', t => {
   run('permits', options, 211, t)
 })
 
+test('With an limit ordered option', t => {
+  t.plan(2)
+  const data = 'trees_subset'
+  const options = {
+    order: ['Species ASC'],
+    limit: 1
+  }
+  const features = require(`./fixtures/${data}.json`).features
+  const filtered = winnow.query(features, options)
+  t.equal(filtered.length, 1)
+  t.equal(filtered[0].properties.Species, 'AGRIFOLIA')
+})
+
 function run (data, options, expected, t) {
   t.plan(1)
   const features = require(`./fixtures/${data}.json`).features
