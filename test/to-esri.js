@@ -100,6 +100,32 @@ test('adding an object id', t => {
   t.end()
 })
 
+test('exclude objectid addition when not part of outfields', t => {
+  const options = {
+    toEsri: true,
+    outFields: ['string']
+  }
+  const fixture = _.cloneDeep(geojson)
+  const result = Winnow.query(fixture, options)
+  t.equal(Object.keys(result.features[0].attributes).length, 1)
+  t.equal(result.features[0].attributes.hasOwnProperty('string'), true)
+  t.end()
+})
+
+test('do not exclude objectid when returnIdsOnly = true', t => {
+  const options = {
+    toEsri: true,
+    outFields: ['string'],
+    returnIdsOnly: true
+  }
+  const fixture = _.cloneDeep(geojson)
+  const result = Winnow.query(fixture, options)
+  t.equal(Object.keys(result.features[0].attributes).length, 2)
+  t.equal(result.features[0].attributes.hasOwnProperty('string'), true)
+  t.equal(result.features[0].attributes.hasOwnProperty('OBJECTID'), true)
+  t.end()
+})
+
 test('do not overwrite the object id', t => {
   const options = {
     toEsri: true

@@ -77,9 +77,12 @@ function esriFy (result, feature, options) {
     })
   }
 
+  // Return unless the OBJECTID field needs to be added to attributes
+  if (!options.returnIdsOnly && (options.fields instanceof Array && !options.fields.includes('OBJECTID'))) return result
+
   const idField = _.get(options, 'collection.metadata.idField')
 
-  // If the idField for the model set use its value as OBJECTID
+  // If the idField for the model is set use its value as OBJECTID
   if (idField) {
     if (!Number.isInteger(feature.properties[idField]) || feature.properties[idField] > 2147483647) {
       console.warn(`WARNING: OBJECTIDs created from provider's "idField" are not integers from 0 to 2147483647`)
