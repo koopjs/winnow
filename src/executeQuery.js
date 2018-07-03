@@ -29,13 +29,13 @@ function standardQuery (features, query, options) {
   let filtered = sql(query, params)
 
   // Handling for limit queries
-  if (options.collection && options.limit) {
+  if (options.limit) {
     let limitExceeded = false
     if (filtered.length === options.limit) {
       limitExceeded = true
       filtered = filtered.slice(0, -1)
     }
-    options.collection.metadata = Object.assign({}, options.collection.metadata, { limitExceeded })
+    if (options.collection) options.collection.metadata = Object.assign({}, options.collection.metadata, { limitExceeded })
   }
   return finishQuery(filtered, options)
 }

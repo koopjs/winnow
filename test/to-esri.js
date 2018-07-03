@@ -49,11 +49,7 @@ test('With a where option and a limit the same as the the filter', t => {
   }
   const result = Winnow.query(trees, options)
   const metadata = result.metadata
-  // NOTE: By shifting the limit to SQL, we can no longer be sure if # of features returned is
-  // due to LIMIT or WHERE; most likely it will be due to limit, so logic set limitExceeded to
-  // true whenever (options.limit && features.length > filtered length
-
-  t.ok(metadata.limitExceeded)
+  t.notOk(metadata.limitExceeded)
   t.end()
 })
 
