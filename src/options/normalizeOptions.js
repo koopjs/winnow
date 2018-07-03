@@ -147,7 +147,9 @@ function normalizeSR (input) {
  * @returns {integer} or undefined
  */
 function normalizeLimit (options) {
-  return options.limit || options.resultRecordCount || options.count || options.maxFeatures
+  const limit = options.limit || options.resultRecordCount || options.count || options.maxFeatures
+  // If there is a limit, add 1 to it so we can later calculate a limitExceeded. The result set will be resized accordingly, post SQL
+  if (limit) return limit + 1
 }
 
 /**

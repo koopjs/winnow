@@ -24,23 +24,17 @@ function aggregateQuery (features, query, options) {
   return finishQuery(filtered, options)
 }
 
-function limitQuery (features, query, options) {
-  const params = Query.params(features, options)
-  const filtered = sql(query, params)
-
-  const limitExceeded = (filtered.length === options.limit && features.length > options.limit) || false
-  if (options.collection) {
-    options.collection.metadata = Object.assign({}, options.collection.metadata, { limitExceeded })
-  }
-  return finishQuery(filtered, options)
-}
-
 function standardQuery (features, query, options) {
   const params = Query.params(features, options)
-  const filtered = sql(query, params)
+  let filtered = sql(query, params)
 
+  // Handling for limit queries
   if (options.collection && options.limit) {
-    const limitExceeded = (filtered.length === options.limit && features.length > options.limit) || false
+    let limitExceeded = false
+    if (filtered.length === options.limit) {
+      limitExceeded = true
+      filtered = filtered.slice(0, -1)
+    }
     options.collection.metadata = Object.assign({}, options.collection.metadata, { limitExceeded })
   }
   return finishQuery(filtered, options)
@@ -60,4 +54,4 @@ function finishQuery (features, options) {
   }
 }
 
-module.exports = { breaksQuery, aggregateQuery, limitQuery, standardQuery, finishQuery }
+module.exports = { breaksQuery, aggregateQuery, standardQuery, finishQuery }

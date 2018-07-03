@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+* Moved `esriFy` function to SQL, which now allows ORDER BY, LIMIT, OFFSET to also be applied via SQL.
+
 ## [1.16.0] - 06-29-2018
 ### Added
 * Add normalization of a `option.sourceSR`; this option identifies the CRS of the source data and defaults to 'EPSG:4326'; 
