@@ -1,9 +1,16 @@
 'use strict'
-const farmhash = require('farmhash')
 const sql = require('./sql')
 const Query = require('./query')
 const { calculateClassBreaks, calculateUniqueValueBreaks } = require('./generateBreaks/index')
 const _ = require('lodash')
+
+// Try to require farmhash, as it is an optional depenecy we can fall back to JavaScript only hashing library
+let hashFunction
+try {
+  hashFunction = require('farmhash').hash32
+} catch (e) {
+  hashFunction = require('string-hash')
+}
 
 function breaksQuery (features, query, options) {
   const queriedData = standardQuery(features, query, options)
@@ -117,7 +124,7 @@ function finishQuery (features, options) {
  */
 function createIntHash (inputStr) {
   // Hash to 32 bit unsigned integer
-  const hash = farmhash.hash32(inputStr)
+  const hash = hashFunction(inputStr)
   // Normalize to range of postive values of signed integer
   return Math.round((hash / 4294967295) * (2147483647))
 }
