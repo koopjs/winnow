@@ -60,10 +60,18 @@ sql.fn.pick = function (properties, fields) {
   return _.pick(properties, parsedFields)
 }
 
-sql.fn.pickAndEsriFy = function (properties, geometry, fields, dateFields, idField) {
+/**
+ * Select a subset of properties and modify propterties to fit ESRI specs
+ * @param {object} properties GeoJSON properties
+ * @param {object} geometry GeoJSON geometry
+ * @param {string} dateFields comma-delimited list of date fields
+ * @param {string} requiresObjectId boolean-string flagging requirement of OBJECTID as part of properties
+ * @param {string} idField name of attribute to be used as OBJECTID
+ */
+sql.fn.pickAndEsriFy = function (properties, geometry, fields, dateFields, requiresObjectId, idField) {
   const parsedFields = fields.split(',')
   const selectedProperties = _.pick(properties, parsedFields)
-  const esriProperties = esriFy(selectedProperties, geometry, dateFields, idField)
+  const esriProperties = esriFy(selectedProperties, geometry, dateFields, requiresObjectId, idField)
   return esriProperties
 }
 
@@ -102,14 +110,26 @@ sql.aggr.hash = function (value, obj, acc) {
   return obj
 }
 
-function esriFy (properties, geometry, dateFields, idField) {
-  const parsedDateFields = dateFields.split(',')
+/**
+ * Modify propterties to fit ESRI specs
+ * @param {object} properties GeoJSON properties
+ * @param {object} geometry GeoJSON geometry
+ * @param {string} dateFields comma-delimited list of date fields
+ * @param {string} requiresObjectId boolean-string flagging requirement of OBJECTID as part of properties
+ * @param {string} idField name of attribute to be used as OBJECTID
+ */
+function esriFy (properties, geometry, dateFields, requiresObjectId, idField) {
+  const parsedDateFields = (dateFields.length === 0) ? [] : dateFields.split(',')
   if (parsedDateFields.length) {
     parsedDateFields.forEach(field => {
       properties[field] = new Date(properties[field]).getTime()
     })
   }
 
+  // If the object ID is not needed, return here
+  if (requiresObjectId === 'false') return properties
+
+  // Coerce idField
   idField = (idField === 'null') ? null : idField
 
   // If the idField for the model set use its value as OBJECTID
