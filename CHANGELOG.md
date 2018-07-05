@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Fixed
+* Ensure OBJECTID is omitted from query results when options specifically exclude it (e.g., `returnIdsOnly=true`)
 * Moved `esriFy` function to SQL, which now allows ORDER BY, LIMIT, OFFSET to also be applied via SQL.
 
 ## [1.16.0] - 06-29-2018
