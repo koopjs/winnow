@@ -86,6 +86,7 @@ test('use idField not name OBJECTID', t => {
   }
   const result = Winnow.query(fixture, options)
   t.equal(result.features[0].attributes.hasOwnProperty('OBJECTID'), true)
+  t.equal(result.features[0].attributes.OBJECTID, 11303)
   t.equal(result.metadata.idField, 'featureId')
   t.end()
 })
@@ -191,8 +192,7 @@ test('do not exclude objectid when returnIdsOnly = true', t => {
   }
   const fixture = _.cloneDeep(geojson)
   const result = Winnow.query(fixture, options)
-  t.equal(Object.keys(result.features[0].attributes).length, 2)
-  t.equal(result.features[0].attributes.hasOwnProperty('string'), true)
+  t.equal(Object.keys(result.features[0].attributes).length, 1)
   t.equal(result.features[0].attributes.hasOwnProperty('OBJECTID'), true)
   t.end()
 })

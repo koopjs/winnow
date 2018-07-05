@@ -70,9 +70,8 @@ sql.fn.pick = function (properties, fields) {
  */
 sql.fn.pickAndEsriFy = function (properties, geometry, fields, dateFields, requiresObjectId, idField) {
   const parsedFields = fields.split(',')
-  const selectedProperties = _.pick(properties, parsedFields)
-  const esriProperties = esriFy(selectedProperties, geometry, dateFields, requiresObjectId, idField)
-  return esriProperties
+  const esriProperties = esriFy(properties, geometry, dateFields, requiresObjectId, idField)
+  return _.pick(esriProperties, parsedFields)
 }
 
 sql.fn.esriFy = esriFy
