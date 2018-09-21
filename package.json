@@ -35,7 +35,6 @@
     "@turf/centroid": "^6.0.0",
     "alasql": "^0.4.0",
     "classybrew": "0.0.3",
-    "esri-proj-codes": "^1.0.3",
     "flora-sql-parser": "^0.7.5",
     "highland": "^3.0.0-beta.3",
     "lodash": "^4.17.4",
