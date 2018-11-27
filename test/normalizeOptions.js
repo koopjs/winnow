@@ -260,3 +260,40 @@ test('normalize idField with metadata.fields', t => {
   const idField = normalizeIdField(options, features)
   t.equals(idField, 'OBJECTID', 'idField defaulted to OBJECTID when found in metadata.fields')
 })
+
+test('normalize idField with metadata.fields', t => {
+  t.plan(1)
+  const options = {
+    collection: {
+      metadata: {
+        fields: [
+          {
+            name: 'OBJECTID'
+          }
+        ]
+      }
+    }
+  }
+  const features = [
+    {
+      properties: {
+        OBJECTID: 1
+      }
+    }
+  ]
+  const idField = normalizeIdField(options, features)
+  t.equals(idField, 'OBJECTID', 'idField defaulted to OBJECTID when found in metadata.fields')
+})
+
+test('normalize idField with metadata.idField = null', t => {
+  t.plan(1)
+  const options = {
+    collection: {
+      metadata: {
+        idField: null
+      }
+    }
+  }
+  const idField = normalizeIdField(options)
+  t.equals(idField, null, 'idField return as null')
+})

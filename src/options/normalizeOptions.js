@@ -217,8 +217,8 @@ function normalizeIdField (options, features = []) {
 
   // Check metadata.fields for and OBJECTID property
   else if (_.find(metadata.fields, { name: 'OBJECTID' })) idField = 'OBJECTID'
-  // Check features for an OBJECTID property
-  else if (features.length > 0 && featureProperties.OBJECTID) idField = 'OBJECTID'
+  // Check features for an OBJECTID property that is not null
+  else if (features.length > 0 && !_.isUndefined(featureProperties.OBJECTID) && !_.isNull(featureProperties.OBJECTID)) idField = 'OBJECTID'
 
   // If there are features, check that the idField is one of the properties
   if (process.env.NODE_ENV !== 'production' && process.env.KOOP_WARNINGS !== 'suppress' && features.length > 0 && !featureProperties[idField]) {
