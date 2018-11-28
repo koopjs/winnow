@@ -221,8 +221,8 @@ function normalizeIdField (options, features = []) {
   else if (features.length > 0 && !_.isUndefined(featureProperties.OBJECTID) && !_.isNull(featureProperties.OBJECTID)) idField = 'OBJECTID'
 
   // If there are features, check that the idField is one of the properties
-  if (process.env.NODE_ENV !== 'production' && process.env.KOOP_WARNINGS !== 'suppress' && features.length > 0 && !featureProperties[idField]) {
-    console.warn(`WARNING: requested provider has "idField" assignment, but this property is not found in every features properties.`)
+  if (process.env.NODE_ENV !== 'production' && process.env.KOOP_WARNINGS !== 'suppress' && idField && features.length > 0 && !featureProperties[idField]) {
+    console.warn(`WARNING: requested provider has "idField" assignment, but this property is not found in properties of all features.`)
   }
 
   return idField
