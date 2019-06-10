@@ -158,7 +158,63 @@ function createClause (options) {
 
   // AST parsing requires a complete SQL.
   const whereTree = parser.parse('SELECT * WHERE ' + options.where).where
-  return traverse(whereTree, options)
+  let whereTransform = traverse(whereTree, options)
+  return translateObjectIdFragments(whereTransform, options)
+}
+
+/**
+ * If the WHERE contains fragments with OBJECTID, but the data doesn't containg an OBJECTID field,
+ * and no substituation is made with the "idField" property, we must replace these WHERE fragments
+ * with use a user-defined function that will calculate the OBJECTID on the fly, do the apropriate
+ * comparison, and return the resulting boolean value
+ * @param {string} input
+ * @param {object} options
+ */
+function translateObjectIdFragments (input, options = {}) {
+  let where = input
+  const { idField } = options
+
+  // Check if OBJECTID is one of the GeoJSON properties
+  const metadataObjectIdField = _.get(options, 'collection.metadata.fields', []).find(field => { return field.name === 'OBJECTID' })
+
+  if (where.includes('OBJECTID') && !idField && !metadataObjectIdField) {
+    // RegExp for name-first predicate, e.g "properties->`OBJECTID` = 1234"
+    const regexOid1st = /(properties|attributes)->`OBJECTID` (=|<|>|<=|>=) ([0-9]+)/g
+
+    // RegExp for value-first predicate, e.g "1234 = properties->`OBJECTID`""
+    const regexOid2nd = /([0-9]+) (=|<|>|<=|>=) (properties|attributes)->`OBJECTID`/g
+
+    // Find matches for either pattern
+    const match1sts = where.match(regexOid1st) || []
+    const match2nds = where.match(regexOid2nd) || []
+
+    // Replace each match with a fragment that compares the boolean result of user-defined function to 'true'
+    match1sts.forEach(match => {
+      const result = regexOid1st.exec(where)
+      where = where.replace(match, `hashedObjectIdComparator(properties, geometry, ${result[2]}, '${result[1]}')=true`)
+    })
+
+    // Replace each match with a fragment that compares the boolean result of user-defined function to 'true'
+    // Since the predicate is reversed we need to invert the predicate operator to use same user-defined function
+    match2nds.forEach(match => {
+      const result = regexOid2nd.exec(where)
+      const operator = invertOperator(result[2])
+      where = where.replace(match, `hashedObjectIdComparator(properties, geometry, ${result[1]}, '${operator}')=true`)
+    })
+  }
+  return where
+}
+
+/**
+ * Invert a logical operator
+ * @param {*} operator
+ */
+function invertOperator (operator) {
+  if (operator === '=') return '='
+  else if (operator === '>') return '<'
+  else if (operator === '>=') return '<='
+  else if (operator === '<') return '>'
+  else if (operator === '<=') return '>='
 }
 
 module.exports = { createClause }
