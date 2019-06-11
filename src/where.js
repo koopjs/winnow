@@ -179,11 +179,15 @@ function createClause (options) {
  */
 function translateObjectIdFragments (input, options = {}) {
   let where = input
+  const { idField } = options
 
   // Check if OBJECTID is one of the GeoJSON properties
   const metadataObjectIdField = _.get(options, 'collection.metadata.fields', []).find(field => { return field.name === 'OBJECTID' })
 
-  if (where.includes('OBJECTID') && !metadataObjectIdField) {
+  // If the WHERE includes predicates with OBJECTID, but no OBJECTID is defined on the data,
+  // and no `idField` has been assigned, we have to use a user-defined function to generate
+  // an on-the-fly OBJECTID for comparison to the request's value
+  if (where.includes('OBJECTID') && !metadataObjectIdField && !idField) {
     // RegExp for name-first predicate, e.g "properties->`OBJECTID` = 1234"
     const regexOid1st = /(properties|attributes)->`OBJECTID` (=|<|>|<=|>=) ([0-9]+)/g
 
