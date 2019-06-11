@@ -1,6 +1,13 @@
 const _ = require('lodash')
 const Parser = require('flora-sql-parser').Parser
 const parser = new Parser()
+const operatorInversions = {
+  '=': '=',
+  '>=': '<',
+  '>': '<=',
+  '<=': '>',
+  '<': '>='
+}
 
 /**
  * Convert an expression node to its string representation.
@@ -184,37 +191,22 @@ function translateObjectIdFragments (input, options = {}) {
     // RegExp for value-first predicate, e.g "1234 = properties->`OBJECTID`""
     const regexOid2nd = /([0-9]+) (=|<|>|<=|>=) (properties|attributes)->`OBJECTID`/g
 
-    // Find matches for either pattern
-    const match1sts = where.match(regexOid1st) || []
-    const match2nds = where.match(regexOid2nd) || []
-
-    // Replace each match with a fragment that compares the boolean result of user-defined function to 'true'
-    match1sts.forEach(match => {
-      const result = regexOid1st.exec(where)
-      where = where.replace(match, `hashedObjectIdComparator(properties, geometry, ${result[2]}, '${result[1]}')=true`)
-    })
-
-    // Replace each match with a fragment that compares the boolean result of user-defined function to 'true'
-    // Since the predicate is reversed we need to invert the predicate operator to use same user-defined function
-    match2nds.forEach(match => {
-      const result = regexOid2nd.exec(where)
-      const operator = invertOperator(result[2])
-      where = where.replace(match, `hashedObjectIdComparator(properties, geometry, ${result[1]}, '${operator}')=true`)
-    })
+    where = where.replace(regexOid1st, `fn($1, geometry, $2, '$3')=true`).replace(regexOid2nd, replacer)
   }
   return where
 }
 
 /**
- * Invert a logical operator
- * @param {*} operator
+ * String replace function receiving regex parameters
+ * @param {string} match
+ * @param {string} value - first matched group
+ * @param {string} operator - second matched group
+ * @param {string} parentProperty - third matched group
+ * @param {*} offset
+ * @param {string} string
  */
-function invertOperator (operator) {
-  if (operator === '=') return '='
-  else if (operator === '>') return '<'
-  else if (operator === '>=') return '<='
-  else if (operator === '<') return '>'
-  else if (operator === '<=') return '>='
+function replacer (match, value, operator, parentProperty, offset, string) {
+  return `fn(${parentProperty}, geometry, ${value}, '${operatorInversions[operator]}')=true`
 }
 
 module.exports = { createClause }

@@ -1,6 +1,5 @@
 'use strict'
 const test = require('tape')
-const _ = require('lodash')
 const where = require('../src/where')
 
 test('Transform a simple equality predicate', t => {
