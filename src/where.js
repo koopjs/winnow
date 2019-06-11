@@ -179,19 +179,18 @@ function createClause (options) {
  */
 function translateObjectIdFragments (input, options = {}) {
   let where = input
-  const { idField } = options
 
   // Check if OBJECTID is one of the GeoJSON properties
   const metadataObjectIdField = _.get(options, 'collection.metadata.fields', []).find(field => { return field.name === 'OBJECTID' })
 
-  if (where.includes('OBJECTID') && !idField && !metadataObjectIdField) {
+  if (where.includes('OBJECTID') && !metadataObjectIdField) {
     // RegExp for name-first predicate, e.g "properties->`OBJECTID` = 1234"
     const regexOid1st = /(properties|attributes)->`OBJECTID` (=|<|>|<=|>=) ([0-9]+)/g
 
     // RegExp for value-first predicate, e.g "1234 = properties->`OBJECTID`""
     const regexOid2nd = /([0-9]+) (=|<|>|<=|>=) (properties|attributes)->`OBJECTID`/g
 
-    where = where.replace(regexOid1st, `fn($1, geometry, $2, '$3')=true`).replace(regexOid2nd, replacer)
+    where = where.replace(regexOid1st, `hashedObjectIdComparator($1, geometry, $3, '$2')=true`).replace(regexOid2nd, replacer)
   }
   return where
 }
@@ -206,7 +205,7 @@ function translateObjectIdFragments (input, options = {}) {
  * @param {string} string
  */
 function replacer (match, value, operator, parentProperty, offset, string) {
-  return `fn(${parentProperty}, geometry, ${value}, '${operatorInversions[operator]}')=true`
+  return `hashedObjectIdComparator(${parentProperty}, geometry, ${value}, '${operatorInversions[operator]}')=true`
 }
 
 module.exports = { createClause }
