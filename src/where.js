@@ -172,7 +172,7 @@ function createClause (options) {
 /**
  * If the WHERE contains fragments with OBJECTID, but the data doesn't contain an OBJECTID field,
  * and no substitution is made with the "idField" property, we must replace these WHERE fragments
- * with use a user-defined function that will calculate the OBJECTID on the fly, do the apropriate
+ * with use a user-defined function that will calculate the OBJECTID on the fly, do the appropriate
  * comparison, and return the resulting boolean value
  * @param {string} input
  * @param {object} options
