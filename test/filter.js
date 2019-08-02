@@ -305,7 +305,7 @@ test('With a ST_Contains geometry predicate', t => {
   run('trees', options, 9878, t)
 })
 
-test('With a ST_Within geometry predicate', t => {
+test.only('With a ST_Within geometry predicate', t => {
   const options = {
     geometry: {
       type: 'Polygon',
@@ -313,7 +313,7 @@ test('With a ST_Within geometry predicate', t => {
     },
     spatialPredicate: 'ST_Within'
   }
-  run('states', options, 1, t)
+  run('trees', options, 9878, t)
 })
 
 test('With a ST_EnvelopeIntersects geometry predicate', t => {
