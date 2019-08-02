@@ -305,7 +305,7 @@ test('With a ST_Contains geometry predicate', t => {
   run('trees', options, 9878, t)
 })
 
-test.only('With a ST_Within geometry predicate', t => {
+test('With a ST_Within geometry predicate', t => {
   const options = {
     geometry: {
       type: 'Polygon',
