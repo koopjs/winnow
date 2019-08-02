@@ -79,7 +79,7 @@ test('sql.fn.ST_Within - geometries fully within a target polygon should return 
 })
 
 test('sql.fn.ST_Within - falsey feature geometries should return false', t => {
-  const falseyFeatures = [ undefined, null, {}, { coordinates: [] }, { coordinates: [0, 0] }, { type: 'Point' } ]
+  const falseyFeatures = [undefined, null, {}, { coordinates: [] }, { coordinates: [0, 0] }, { type: 'Point' }]
 
   falseyFeatures.forEach(falsey => {
     t.notOk(sql.fn.ST_Within(falsey, polygonFilter), `falsey feature should return false`)
