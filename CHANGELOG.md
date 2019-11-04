@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Fixed
+* Split comma delimited group by fields
+
 ## [1.16.9] - 08-02-2019
 ### Fixed
 * ST_Within had geometry targets reversed. Now tests that feature is within filter.
