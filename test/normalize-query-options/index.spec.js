@@ -1,5 +1,5 @@
 const test = require('tape')
-const normalizeQueryOptions = require('../lib/normalize-query-options')
+const normalizeQueryOptions = require('../../lib/normalize-query-options')
 
 test('normalize a wfs srsName', t => {
   t.plan(1)
