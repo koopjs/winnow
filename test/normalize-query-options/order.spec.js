@@ -8,6 +8,13 @@ test('normalize-options, order: undefined', t => {
   t.equal(normalized, undefined)
 })
 
+test('normalize-options, order: empty string', t => {
+  t.plan(1)
+
+  const normalized = normalizeOrder({ order: '' })
+  t.equal(normalized, undefined)
+})
+
 test('normalize-options, order: defer to "order" value', t => {
   t.plan(1)
 
