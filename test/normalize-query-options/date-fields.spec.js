@@ -1,31 +1,31 @@
 const test = require('tape')
-const normalizeDateFields = require('../../lib/normalize-query-options/date-fields')
+const getDateFields = require('../../lib/normalize-query-options/date-fields')
 
 test('normalize-query-options, date-fields: undefined metadata', t => {
   t.plan(1)
 
-  const normalized = normalizeDateFields()
+  const normalized = getDateFields()
   t.deepEquals(normalized, [])
 })
 
 test('normalize-query-options, date-fields: undefined metadata.fields', t => {
   t.plan(1)
 
-  const normalized = normalizeDateFields({})
+  const normalized = getDateFields({})
   t.deepEquals(normalized, [])
 })
 
 test('normalize-query-options, date-fields: metadata.fields are empty array', t => {
   t.plan(1)
 
-  const normalized = normalizeDateFields({ fields: [] })
+  const normalized = getDateFields({ fields: [] })
   t.deepEquals(normalized, [])
 })
 
 test('normalize-query-options, date-fields: requestedFields undefined', t => {
   t.plan(1)
 
-  const normalized = normalizeDateFields({
+  const normalized = getDateFields({
     metadata: {
       fields: [
         { name: 'hello', type: 'Date' },
@@ -39,7 +39,7 @@ test('normalize-query-options, date-fields: requestedFields undefined', t => {
 test('normalize-query-options, date-fields: requestedFields defined', t => {
   t.plan(1)
 
-  const normalized = normalizeDateFields({
+  const normalized = getDateFields({
     metadata: {
       fields: [
         { name: 'hello', type: 'Date' },
