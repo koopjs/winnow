@@ -1,13 +1,13 @@
 {
   "name": "winnow",
-  "version": "1.16.12",
+  "version": "1.16.13",
   "description": "Apply sql-like filters to GeoJSON",
-  "main": "dist/index.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "standard && tape test/*.js | tap-spec",
+    "test": "standard && tape 'test/**/*.js' | tap-spec",
     "clean": "rm -rf dist",
     "compile": "buble -i src -o dist",
     "fix": "standard --fix"
@@ -31,20 +31,20 @@
   },
   "homepage": "https://github.com/koopjs/winnow#readme",
   "dependencies": {
-    "@esri/proj-codes": "^2.2.0",
+    "@esri/proj-codes": "^2.6.0",
+    "@terraformer/spatial": "^2.0.7",
     "@turf/bbox-polygon": "^6.0.1",
     "@turf/centroid": "^6.0.0",
-    "alasql": "^0.5.0",
+    "alasql": "^0.6.2",
     "classybrew": "0.0.3",
     "flora-sql-parser": "^0.9.3",
     "highland": "^3.0.0-beta.3",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "ngeohash": "^0.6.3",
-    "proj4": "^2.3.17",
+    "proj4": "^2.6.2",
     "simple-statistics": "^7.0.0",
     "string-hash": "^1.1.3",
-    "terraformer": "^1.0.7",
     "wkt-parser": "^1.2.2"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "feature-parser": "^1.0.1",
     "standard": "^14.3.0",
     "tap-spec": "^5.0.0",
-    "tape": "^4.6.3"
+    "tape": "^5.0.0"
   },
   "optionalDependencies": {
     "farmhash": "^3.1.0"
