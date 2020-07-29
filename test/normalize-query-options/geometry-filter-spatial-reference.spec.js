@@ -13,7 +13,27 @@ test('normalize-query-options, geometry-filter-spatial-reference: undefined opti
   t.equal(spatialRef, 'EPSG:4326')
 })
 
-test('normalize-query-options, geometry-filter-spatial-reference: defer to geometry filter', t => {
+test('normalize-query-options, geometry-filter-spatial-reference: defer to geometry filter bbox', t => {
+  t.plan(1)
+  const options = {
+    geometry: '100,200,300,400,3857',
+    inSR: '4269'
+  }
+  const spatialRef = normalizeGeometryFilterSpatialReference(options)
+  t.equal(spatialRef, 'EPSG:3857')
+})
+
+test('normalize-query-options, geometry-filter-spatial-reference: geometry filter bbox missing spatial reference', t => {
+  t.plan(1)
+  const options = {
+    geometry: '100,200,300,400',
+    inSR: '4269'
+  }
+  const spatialRef = normalizeGeometryFilterSpatialReference(options)
+  t.equal(spatialRef, 'EPSG:4269')
+})
+
+test('normalize-query-options, geometry-filter-spatial-reference: defer to geometry filter wkid', t => {
   t.plan(1)
   const options = {
     geometry: {
