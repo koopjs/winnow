@@ -69,7 +69,7 @@ test('Should normalize and execute breaks-classification query', t => {
   t.end()
 })
 
-test('Should normalize and execute aggregation query', t => {
+test.only('Should normalize and execute aggregation query', t => {
   const spys = sinon.spy({
     normalizeQueryInput: function (input) { return ['features'] },
     normalizeQueryOptions: function (options) { return options },
@@ -97,7 +97,7 @@ test('Should normalize and execute aggregation query', t => {
   t.deepEquals(spys.normalizeQueryOptions.firstCall.args, [{ hello: 'world', aggregates: {}, collection: { metadata: { foo: 'bar' } } }, ['features']])
   t.ok(spys.sqlQueryHelpers.create.calledOnce)
   t.deepEquals(spys.sqlQueryHelpers.create.firstCall.args, [{ hello: 'world', aggregates: {}, collection: { metadata: { foo: 'bar' } } }])
-  t.ok(spys.executeQuery.breaksQuery.calledOnce)
+  t.ok(spys.executeQuery.aggregateQuery.calledOnce)
   t.equals(result, 'query and aggregation result')
   t.end()
 })
