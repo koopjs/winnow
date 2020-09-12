@@ -1,5 +1,5 @@
 const test = require('tape')
-const { createFieldsSelectFragment } = require('../../../../lib/sql-query-builder/select/fields-select-fragment')
+const createFieldsSelectFragment = require('../../../../lib/sql-query-builder/select/fields-select-fragment')
 
 test('createFieldsSelectFragment: no specification', t => {
   const fieldsFragment = createFieldsSelectFragment({

@@ -1,5 +1,5 @@
 const test = require('tape')
-const { createGeometrySelectFragment } = require('../../../../lib/sql-query-builder/select/geometry-select-fragment')
+const createGeometrySelectFragment = require('../../../../lib/sql-query-builder/select/geometry-select-fragment')
 
 test('createGeometryFragment: no options', t => {
   const geometryFragment = createGeometrySelectFragment()
