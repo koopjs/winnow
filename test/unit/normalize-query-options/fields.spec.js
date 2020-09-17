@@ -15,11 +15,11 @@ test('normalize-options, fields: defer to "fields" value', t => {
   t.deepEquals(normalizedFields, ['hello'])
 })
 
-test('normalize-options, fields: remove Geoservices-style "*" when present', t => {
+test('normalize-options, fields: convert Geoservices-style "*" to empty array', t => {
   t.plan(1)
 
   const normalizedFields = normalizeFields({ fields: '*' })
-  t.equal(normalizedFields, undefined)
+  t.deepEquals(normalizedFields, undefined)
 })
 
 test('normalize-options, fields: convert string to array', t => {
