@@ -38,7 +38,7 @@ test('With a field that has been uppercased', t => {
   run('trees', options, 12105, t)
 })
 
-test.only('With the toEsri option', t => {
+test('With the toEsri option', t => {
   const options = {
     toEsri: true,
     where: "Genus like '%Quercus%'"
