@@ -63,7 +63,7 @@
     "farmhash": "^3.1.0"
   },
   "lint-staged": {
-    "*.{js,md}": "npm run fix"
+    "*.js": "npm run fix"
   },
   "husky": {
     "hooks": {
