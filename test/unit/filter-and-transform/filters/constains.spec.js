@@ -13,6 +13,18 @@ test('contains: empty object input', t => {
   t.end()
 })
 
+test('contains: null input', t => {
+  const result = contains(null, {})
+  t.equals(result, false)
+  t.end()
+})
+
+test('contains: null input', t => {
+  const result = contains({}, null)
+  t.equals(result, false)
+  t.end()
+})
+
 test('contains: missing geometry type', t => {
   const result = contains({ coordinates: [44, 84] }, {})
   t.equals(result, false)

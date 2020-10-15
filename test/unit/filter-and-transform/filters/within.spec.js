@@ -13,6 +13,18 @@ test('within: empty object input', t => {
   t.end()
 })
 
+test('within: null input', t => {
+  const result = within(null, {})
+  t.equals(result, false)
+  t.end()
+})
+
+test('within: null input', t => {
+  const result = within({}, null)
+  t.equals(result, false)
+  t.end()
+})
+
 test('within: missing geometry type', t => {
   const result = within({ coordinates: [44, 84] }, {})
   t.equals(result, false)

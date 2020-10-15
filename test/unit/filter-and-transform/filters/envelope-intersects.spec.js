@@ -13,6 +13,18 @@ test('envelopeIntersects: empty object input', t => {
   t.end()
 })
 
+test('envelopeIntersects: null input', t => {
+  const result = envelopeIntersects(null, {})
+  t.equals(result, false)
+  t.end()
+})
+
+test('envelopeIntersects: null input', t => {
+  const result = envelopeIntersects({}, null)
+  t.equals(result, false)
+  t.end()
+})
+
 test('envelopeIntersects: missing geometry type', t => {
   const result = envelopeIntersects({ coordinates: [44, 84] }, {})
   t.equals(result, false)

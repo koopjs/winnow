@@ -13,6 +13,18 @@ test('intersects: empty object input', t => {
   t.end()
 })
 
+test('intersects: null input', t => {
+  const result = intersects(null, {})
+  t.equals(result, false)
+  t.end()
+})
+
+test('intersects: null input', t => {
+  const result = intersects({}, null)
+  t.equals(result, false)
+  t.end()
+})
+
 test('intersects: missing geometry type', t => {
   const result = intersects({ coordinates: [44, 84] }, {})
   t.equals(result, false)
