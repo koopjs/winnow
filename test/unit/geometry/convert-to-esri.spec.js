@@ -1,5 +1,5 @@
 const test = require('tape')
-const convertToEsri = require('../../../lib/geometry/convert-to-esri')
+const toEsriGeometry = require('../../../lib/filter-and-transform/transforms/to-esri-geometry')
 const {
   point,
   linestring,
@@ -15,38 +15,59 @@ const {
   esriMultiPolygon
 } = require('./fixtures')
 
-test('convertToEsri: point', t => {
+test('toEsriGeometry: no geometry', t => {
   t.plan(1)
-  const transformed = convertToEsri(point)
+  const transformed = toEsriGeometry()
+  t.equals(transformed, null)
+})
+
+test('toEsriGeometry: no geometry type', t => {
+  t.plan(1)
+  const transformed = toEsriGeometry({})
+  t.equals(transformed, null)
+})
+
+test('toEsriGeometry: point', t => {
+  t.plan(1)
+  const transformed = toEsriGeometry(point)
   t.deepEquals(transformed, esriPoint)
 })
 
-test('convertToEsri: linestring', t => {
+test('toEsriGeometry: linestring', t => {
   t.plan(1)
-  const transformed = convertToEsri(linestring)
+  const transformed = toEsriGeometry(linestring)
   t.deepEquals(transformed, esriLinestring)
 })
 
-test('convertToEsri: polygon', t => {
+test('toEsriGeometry: polygon', t => {
   t.plan(1)
-  const transformed = convertToEsri(polygon)
+  const transformed = toEsriGeometry(polygon)
   t.deepEquals(transformed, esriPolygon)
 })
 
-test('convertToEsri: multipoint', t => {
+test('toEsriGeometry: multipoint', t => {
   t.plan(1)
-  const transformed = convertToEsri(multipoint)
+  const transformed = toEsriGeometry(multipoint)
   t.deepEquals(transformed, esriMultiPoint)
 })
 
-test('convertToEsri: multilinestring', t => {
+test('toEsriGeometry: multilinestring', t => {
   t.plan(1)
-  const transformed = convertToEsri(multilinestring)
+  const transformed = toEsriGeometry(multilinestring)
   t.deepEquals(transformed, esriMulitLinestring)
 })
 
-test('convertToEsri: multipolygon', t => {
+test('toEsriGeometry: multipolygon', t => {
   t.plan(1)
-  const transformed = convertToEsri(multipolygon)
+  const transformed = toEsriGeometry(multipolygon)
   t.deepEquals(transformed, esriMultiPolygon)
+})
+
+test('toEsriGeometry: unsupported type', t => {
+  t.plan(1)
+  try {
+    toEsriGeometry({ type: 'unsupported' })
+  } catch (error) {
+    t.equals(error.message, 'conversion of geometry type unsupported to Esri geometry is not supported')
+  }
 })
