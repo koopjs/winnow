@@ -1,5 +1,5 @@
 const test = require('tape')
-const toEsriGeometry = require('../../../lib/filter-and-transform/transforms/to-esri-geometry')
+const toEsriGeometry = require('../../../../lib/filter-and-transform/transforms/to-esri-geometry')
 const {
   point,
   linestring,
@@ -13,7 +13,7 @@ const {
   esriMultiPoint,
   esriMulitLinestring,
   esriMultiPolygon
-} = require('./fixtures')
+} = require('../../geometry/fixtures')
 
 test('toEsriGeometry: no geometry', t => {
   t.plan(1)
@@ -65,9 +65,6 @@ test('toEsriGeometry: multipolygon', t => {
 
 test('toEsriGeometry: unsupported type', t => {
   t.plan(1)
-  try {
-    toEsriGeometry({ type: 'unsupported' })
-  } catch (error) {
-    t.equals(error.message, 'conversion of geometry type unsupported to Esri geometry is not supported')
-  }
+  const result = toEsriGeometry({ type: 'unsupported' })
+  t.equals(result, null)
 })
