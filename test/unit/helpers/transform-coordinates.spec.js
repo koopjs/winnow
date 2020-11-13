@@ -1,6 +1,6 @@
 const test = require('tape')
 const _ = require('lodash')
-const transformCoordinates = require('../../../lib/geometry/transform-coordinates')
+const transformCoordinates = require('../../../lib/helpers/transform-coordinates')
 const {
   point,
   linestring,
