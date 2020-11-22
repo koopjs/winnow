@@ -1,32 +1,7 @@
 const test = require('tape')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const modulePath = '../../lib/execute-query'
-const { finishQuery } = require('../../lib/execute-query')
-
-test('finishQuery: groupBy option', t => {
-  const result = finishQuery(['feature1', 'feature2'], { groupBy: true })
-  t.deepEquals(result, ['feature1', 'feature2'])
-  t.end()
-})
-
-test('finishQuery: aggregates option', t => {
-  const result = finishQuery(['feature1', 'feature2'], { aggregates: true })
-  t.deepEquals(result, 'feature1')
-  t.end()
-})
-
-test('finishQuery: collection option', t => {
-  const result = finishQuery(['feature1', 'feature2'], { collection: {} })
-  t.deepEquals(result, { features: ['feature1', 'feature2'] })
-  t.end()
-})
-
-test('finishQuery: no options', t => {
-  const result = finishQuery(['feature1', 'feature2'], {})
-  t.deepEquals(result, ['feature1', 'feature2'])
-  t.end()
-})
+const modulePath = '../../../lib/query/standard-query'
 
 test('standardQuery, no options', t => {
   const filterAndTransformSpy = sinon.spy({
@@ -42,8 +17,8 @@ test('standardQuery, no options', t => {
   })
 
   const { standardQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy
   })
 
   const result = standardQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', { foo: 'bar' })
@@ -69,8 +44,8 @@ test('standardQuery, limit option', t => {
   })
 
   const { standardQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy
   })
 
   const result = standardQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', { foo: 'bar', limit: 2 })
@@ -96,8 +71,8 @@ test('standardQuery, limit and collection option', t => {
   })
 
   const { standardQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy
   })
 
   const result = standardQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', { foo: 'bar', limit: 2, collection: {} })
@@ -105,35 +80,8 @@ test('standardQuery, limit and collection option', t => {
   t.ok(queryBuilderSpy.params.calledOnce)
   t.deepEquals(queryBuilderSpy.params.firstCall.args, [
     ['feature1', 'feature2', 'feature3'],
-    { foo: 'bar', limit: 2, collection: { metadata: { limitExceeded: true }, features: ['feature1'] } }
+    { foo: 'bar', limit: 2, collection: { metadata: { limitExceeded: true } } }
   ])
-  t.ok(filterAndTransformSpy.filterAndTransform.calledOnce)
-  t.deepEquals(filterAndTransformSpy.filterAndTransform.firstCall.args, ['SQL statement', ['params1', 'params2']])
-  t.end()
-})
-
-test('aggregateQuery', t => {
-  const filterAndTransformSpy = sinon.spy({
-    filterAndTransform: () => {
-      return ['feature1', 'feature2']
-    }
-  })
-
-  const queryBuilderSpy = sinon.spy({
-    params: () => {
-      return ['params1', 'params2']
-    }
-  })
-
-  const { aggregateQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
-  })
-
-  const result = aggregateQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', { foo: 'bar' })
-  t.deepEquals(result, ['feature1', 'feature2'])
-  t.ok(queryBuilderSpy.params.calledOnce)
-  t.deepEquals(queryBuilderSpy.params.firstCall.args, [['feature1', 'feature2', 'feature3'], { foo: 'bar' }])
   t.ok(filterAndTransformSpy.filterAndTransform.calledOnce)
   t.deepEquals(filterAndTransformSpy.filterAndTransform.firstCall.args, ['SQL statement', ['params1', 'params2']])
   t.end()
@@ -153,8 +101,8 @@ test('breaksQuery, unsupported classification type', t => {
   })
 
   const { breaksQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy
   })
 
   try {
@@ -169,7 +117,7 @@ test('breaksQuery, unsupported classification type', t => {
     t.ok(queryBuilderSpy.params.calledOnce)
     t.deepEquals(queryBuilderSpy.params.firstCall.args, [
       ['feature1', 'feature2', 'feature3'],
-      { foo: 'bar', collection: { features: ['feature1', 'feature2'] }, classification: {} }
+      { foo: 'bar', collection: {}, classification: {} }
     ])
     t.ok(filterAndTransformSpy.filterAndTransform.calledOnce)
     t.deepEquals(filterAndTransformSpy.filterAndTransform.firstCall.args, ['SQL statement', ['params1', 'params2']])
@@ -191,8 +139,8 @@ test('breaksQuery, unsupported breakCount', t => {
   })
 
   const { breaksQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy
   })
 
   try {
@@ -209,7 +157,7 @@ test('breaksQuery, unsupported breakCount', t => {
       ['feature1', 'feature2', 'feature3'],
       {
         foo: 'bar',
-        collection: { features: ['feature1', 'feature2'] },
+        collection: {},
         classification: { type: 'classes', breakCount: 0 }
       }
     ])
@@ -238,9 +186,9 @@ test('breaksQuery, classes classification type', t => {
     }
   })
   const { breaksQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy,
-    './generateBreaks/index': generateBreaksSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy,
+    '../generateBreaks/index': generateBreaksSpy
   })
 
   const result = breaksQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', {
@@ -252,7 +200,7 @@ test('breaksQuery, classes classification type', t => {
   t.ok(queryBuilderSpy.params.calledOnce)
   t.deepEquals(queryBuilderSpy.params.firstCall.args, [
     ['feature1', 'feature2', 'feature3'],
-    { foo: 'bar', collection: { features: ['feature1', 'feature2'] }, classification: { type: 'classes', breakCount: 1 } }
+    { foo: 'bar', collection: {}, classification: { type: 'classes', breakCount: 1 } }
   ])
   t.ok(filterAndTransformSpy.filterAndTransform.calledOnce)
   t.deepEquals(filterAndTransformSpy.filterAndTransform.firstCall.args, ['SQL statement', ['params1', 'params2']])
@@ -283,9 +231,9 @@ test('breaksQuery, classes classification type', t => {
     }
   })
   const { breaksQuery } = proxyquire(modulePath, {
-    './filter-and-transform': filterAndTransformSpy,
-    './sql-query-builder': queryBuilderSpy,
-    './generateBreaks/index': generateBreaksSpy
+    '../filter-and-transform': filterAndTransformSpy,
+    '../sql-query-builder': queryBuilderSpy,
+    '../generateBreaks/index': generateBreaksSpy
   })
 
   const result = breaksQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', {
