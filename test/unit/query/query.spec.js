@@ -10,10 +10,7 @@ test('Should normalize and execute standard query on feature array', t => {
     sqlQueryHelpers: sinon.spy({
       create: function () { return 'sql statement' }
     }),
-    standardQuery: sinon.spy({
-      breaksQuery: function () { return 'query and breaks categorization result' },
-      standardQuery: function () { return 'standard query result' }
-    })
+    standardQuery: function () { return 'standard query result' }
   })
 
   const query = proxyquire(modulePath, {
@@ -30,7 +27,9 @@ test('Should normalize and execute standard query on feature array', t => {
   t.deepEquals(spys.normalizeQueryOptions.firstCall.args, [{ hello: 'world' }, ['features']])
   t.ok(spys.sqlQueryHelpers.create.calledOnce)
   t.deepEquals(spys.sqlQueryHelpers.create.firstCall.args, [{ hello: 'world' }])
-  t.ok(spys.standardQuery.standardQuery.calledOnce)
+  t.ok(spys.standardQuery.calledOnce)
+  t.deepEquals(spys.standardQuery.firstCall.args, [['features'], 'sql statement', { skipLimitHandling: false, hello: 'world' }]
+  )
   t.equals(result, 'standard query result')
   t.end()
 })
@@ -42,10 +41,7 @@ test('Should normalize and execute standard query on collection', t => {
     sqlQueryHelpers: sinon.spy({
       create: function () { return 'sql statement' }
     }),
-    standardQuery: sinon.spy({
-      breaksQuery: function () { return 'query and breaks categorization result' },
-      standardQuery: function () { return 'standard query result' }
-    })
+    standardQuery: function () { return 'standard query result' }
   })
 
   const query = proxyquire(modulePath, {
@@ -61,7 +57,12 @@ test('Should normalize and execute standard query on collection', t => {
   t.deepEquals(spys.normalizeQueryOptions.firstCall.args, [{ hello: 'world', collection: { metadata: { foo: 'bar' } } }, ['features']])
   t.ok(spys.sqlQueryHelpers.create.calledOnce)
   t.deepEquals(spys.sqlQueryHelpers.create.firstCall.args, [{ hello: 'world', collection: { metadata: { foo: 'bar' } } }])
-  t.ok(spys.standardQuery.standardQuery.calledOnce)
+  t.ok(spys.standardQuery.calledOnce)
+  t.deepEquals(spys.standardQuery.firstCall.args, [
+    ['features'],
+    'sql statement',
+    { skipLimitHandling: false, hello: 'world', collection: { metadata: { foo: 'bar' } } }
+  ])
   t.equals(result, 'standard query result')
   t.end()
 })
@@ -73,17 +74,14 @@ test('Should normalize and execute breaks-classification query', t => {
     sqlQueryHelpers: sinon.spy({
       create: function () { return 'sql statement' }
     }),
-    standardQuery: sinon.spy({
-      breaksQuery: function () { return 'query and breaks classification result' },
-      standardQuery: function () { return 'standard query result' }
-    })
+    classificationQuery: function () { return 'breaks classification result' }
   })
 
   const query = proxyquire(modulePath, {
     './normalize-query-input': spys.normalizeQueryInput,
     '../normalize-query-options': spys.normalizeQueryOptions,
     '../sql-query-builder': spys.sqlQueryHelpers,
-    './standard-query': spys.standardQuery
+    './classification-query': spys.classificationQuery
   })
 
   const result = query({ metadata: { foo: 'bar' }, features: ['features'] }, { hello: 'world', classification: {} })
@@ -92,8 +90,13 @@ test('Should normalize and execute breaks-classification query', t => {
   t.deepEquals(spys.normalizeQueryOptions.firstCall.args, [{ hello: 'world', classification: {}, collection: { metadata: { foo: 'bar' } } }, ['features']])
   t.ok(spys.sqlQueryHelpers.create.calledOnce)
   t.deepEquals(spys.sqlQueryHelpers.create.firstCall.args, [{ hello: 'world', classification: {}, collection: { metadata: { foo: 'bar' } } }])
-  t.ok(spys.standardQuery.breaksQuery.calledOnce)
-  t.equals(result, 'query and breaks classification result')
+  t.ok(spys.classificationQuery.calledOnce)
+  t.deepEquals(spys.classificationQuery.firstCall.args, [
+    ['features'],
+    'sql statement',
+    { classification: {}, hello: 'world', collection: { metadata: { foo: 'bar' } } }
+  ])
+  t.equals(result, 'breaks classification result')
   t.end()
 })
 
@@ -104,10 +107,7 @@ test('Should normalize and execute aggregation query', t => {
     sqlQueryHelpers: sinon.spy({
       create: function () { return 'sql statement' }
     }),
-    standardQuery: sinon.spy({
-      breaksQuery: function () { return 'query and breaks classification result' },
-      standardQuery: function () { return 'standard query result' }
-    })
+    standardQuery: function () { return 'standard query result' }
   })
 
   const query = proxyquire(modulePath, {
@@ -123,7 +123,7 @@ test('Should normalize and execute aggregation query', t => {
   t.deepEquals(spys.normalizeQueryOptions.firstCall.args, [{ hello: 'world', aggregates: {}, collection: { metadata: { foo: 'bar' } } }, ['features']])
   t.ok(spys.sqlQueryHelpers.create.calledOnce)
   t.deepEquals(spys.sqlQueryHelpers.create.firstCall.args, [{ hello: 'world', aggregates: {}, collection: { metadata: { foo: 'bar' } } }])
-  t.ok(spys.standardQuery.standardQuery.calledOnce)
+  t.ok(spys.standardQuery.calledOnce)
   t.equals(result, 'standard query result')
   t.end()
 })
