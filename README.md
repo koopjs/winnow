@@ -111,7 +111,7 @@ An array of fields use to sort the output
 Can be an epsg code, an ogc wkt or an esri wkt. This parameter controls how the geometry will be projected to another coordinate system.
 
 ### `inputCrs`
-Can be an epsg code, an ogc wkt or an esri wkt. This parameter defines the coordinate system of input data. If the incoming data is a feature collection with the GeoJSON `crs` property defined according to specification, winnow will use it's value if `inputCrs` is undefined. If neither is defined, Winnow assumes the input data has coordinate system WGS84.
+Can be an epsg code, an ogc wkt or an esri wkt. This parameter defines the coordinate system of input data. If the incoming data is a GeoJSON feature collection with a "named" `crs` property defined according to [specification](https://geojson.org/geojson-spec#named-crs), winnow will use it's value if `inputCrs` is undefined. If neither is defined, Winnow assumes the input data has coordinate system WGS84.
 
 ### `toEsri`
 If true, the object returned will be an esri feature collection.
