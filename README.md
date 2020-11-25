@@ -24,6 +24,7 @@ const options = {
   offset: Number // number of return features to offset
   order: Array // Set of fields or aggregates by which to order results
   projection: Number || String // An EPSG code, an OGC WKT or an ESRI WKT used to convert geometry
+  inputCrs: Number || String // An EPSG code, an OGC WKT or an ESRI WKT defining the coordinate system of the input data. Defaults to 4326 (WGS84)
   toEsri: Boolean // return Esri feature collection
   geometryPrecision: Number // number of digits to appear after decimal point for geometry
   classification: Object // GeoJSON or geoservices classification Object
@@ -108,6 +109,9 @@ An array of fields use to sort the output
 
 ### `projection`
 Can be an epsg code, an ogc wkt or an esri wkt. This parameter controls how the geometry will be projected to another coordinate system.
+
+### `inputCrs`
+Can be an epsg code, an ogc wkt or an esri wkt. This parameter defines the coordinate system of input data.  Defaults to `4326` for WGS84.
 
 ### `toEsri`
 If true, the object returned will be an esri feature collection.
