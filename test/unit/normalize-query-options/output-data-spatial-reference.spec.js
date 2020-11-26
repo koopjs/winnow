@@ -61,6 +61,6 @@ test('normalize-query-options, output-data-spatial-reference: bad input', t => {
   const options = {
     outSR: 99999
   }
-  const spatialRef = normalizeOutputDataSpatialReference(options)
-  t.equal(spatialRef, undefined)
+  const { wkid } = normalizeOutputDataSpatialReference(options)
+  t.equal(wkid, 4326)
 })
