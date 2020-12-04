@@ -72,7 +72,7 @@ test('classificationQuery, classes classification type', t => {
 
   const classificationQuery = proxyquire(modulePath, {
     './standard-query': standardQuerySpy,
-    '../generateBreaks/index': generateBreaksSpy
+    '../generate-breaks/index': generateBreaksSpy
   })
 
   const result = classificationQuery(['feature1', 'feature2', 'feature3'], 'SQL statement', {
@@ -95,7 +95,7 @@ test('classificationQuery, classes classification type', t => {
   t.end()
 })
 
-test('classificationQuery, classes classification type', t => {
+test('classificationQuery, unique classification type', t => {
   const standardQuerySpy = sinon.spy(function () {
     if (standardQuerySpy.callCount === 1) {
       return { features: ['feature1', 'feature2'] }
@@ -111,7 +111,7 @@ test('classificationQuery, classes classification type', t => {
 
   const classificationQuery = proxyquire(modulePath, {
     './standard-query': standardQuerySpy,
-    '../generateBreaks/index': generateBreaksSpy
+    '../generate-breaks/index': generateBreaksSpy
   })
 
   const result = classificationQuery(['feature1', 'feature2', 'feature3'], 'SQL filter statement', {
