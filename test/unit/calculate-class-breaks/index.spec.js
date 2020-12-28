@@ -1,5 +1,5 @@
 const test = require('tape')
-const { calculateClassBreaks } = require('../../../lib/generate-breaks/index')
+const calculateClassBreaks = require('../../../lib/calculate-class-breaks')
 
 test('calculateClassBreaks: no breakCount', t => {
   t.plan(1)
@@ -66,7 +66,7 @@ test('calculateClassBreaks: field not found', t => {
     calculateClassBreaks(features, classification)
     t.fail('should have thrown')
   } catch (error) {
-    t.equals(error.message, 'Classification field missing from first feature: foodbar')
+    t.equals(error.message, '"foodbar" was not found on any feature.')
   }
 })
 
