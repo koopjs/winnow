@@ -1,5 +1,5 @@
 const test = require('tape')
-const calculateClassBreaks = require('../../../lib/calculate-class-breaks')
+const calculateClassBreaks = require('../../../lib/calculate-class-breaks/index.js')
 
 test('calculateClassBreaks: no breakCount', t => {
   t.plan(1)
