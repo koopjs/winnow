@@ -308,7 +308,7 @@ test('modify class breaks using geoservices fixture', t => {
   t.equal(Array.isArray(results[0]), true)
   t.equal(results.length, 9)
   t.deepEqual(results[0], [0.6020599913279624, 0.8450980400142568])
-  t.deepEqual(results[4], [0.954242509439326, 1.1139433523068367])
+  t.deepEqual(results[4], [0.9542425094393249, 1.1139433523068367])
   t.end()
 })
 

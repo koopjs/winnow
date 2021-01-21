@@ -191,7 +191,7 @@ test('calculateClassBreaks: normalize by log', t => {
   }
 
   const result = calculateClassBreaks(features, classification)
-  t.deepEquals(result, [[0.4771212547196624, 0.784060839370454], [0.784060839370455, 1.0910004240212456], [1.0910004240212456, 1.3979400086720375]])
+  t.deepEquals(result, [[0.47712125471966244, 0.7840608393704542], [0.7840608393704543, 1.091000424021246], [1.091000424021247, 1.3979400086720377]])
 })
 
 test('calculateClassBreaks: normalize by percent', t => {

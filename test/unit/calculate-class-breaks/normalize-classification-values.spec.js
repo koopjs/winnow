@@ -115,7 +115,7 @@ test('nomalizeClassificationValue: normalize by log, 0', spec => {
 
 test('nomalizeClassificationValue: normalize by log', spec => {
   const result = normalizeClassificationValues([{ properties: { booz: 200 } }], { normType: 'log', field: 'booz' })
-  spec.deepEquals(result, [2.301029995663981])
+  spec.deepEquals(result, [2.3010299956639813])
   spec.end()
 })
 
