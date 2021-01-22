@@ -9,7 +9,8 @@
   "scripts": {
     "test": "standard && tape 'test/**/*.js' | tap-spec",
     "fix": "standard --fix",
-    "benchmark": "node benchmark/index.js"
+    "benchmark": "node benchmark/index.js",
+    "benchmark:ci": "node benchmark/index.js | tee benchmark-result.txt"
   },
   "repository": {
     "type": "git",
