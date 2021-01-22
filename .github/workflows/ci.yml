@@ -19,9 +19,15 @@ jobs:
           node-version: '14'
       - run: npm install
       - run: npm run benchmark:ci
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ubuntu-node14-benchmark
       - name: Store benchmark result
         uses: rhysd/github-action-benchmark@v1
         with:
           tool: 'benchmarkjs'
           output-file-path: benchmark-result.txt
+          external-data-json-path: ./cache/benchmark-data.json
           fail-on-alert: true
