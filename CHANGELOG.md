@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Fixed
-* Warning log for missing geometry filter spatial referenc
+* Warning log for missing geometry filter spatial reference
 
 ## [2.2.3] - 01-25-2021
 ### Changed
