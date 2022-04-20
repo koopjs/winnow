@@ -85,16 +85,16 @@ test('translateSqlWhere: transform an inverse predicate with OBJECTID and no met
   t.equals(whereFragment, 'hashedObjectIdComparator(properties, geometry, 1234, \'<=\')=true')
 })
 
-// test('translateSqlWhere: transform an inverse predicate with OBJECTID and no metadata fields to Esri flavor with user-defined function', t => {
-//   t.plan(1)
-//   const options = {
-//     where: '1234>OBJECTID',
-//     esri: true
-//   }
-//   const normalizeOpts = normalizeQueryOptions(options)
-//   const whereFragment = translateSqlWhere(normalizeOpts)
-//   t.equals(whereFragment, 'hashedObjectIdComparator(attributes, geometry, 1234, \'<=\')=true')
-// })
+test('translateSqlWhere: transform an inverse predicate with OBJECTID and no metadata fields to Esri flavor with user-defined function', t => {
+  t.plan(1)
+  const options = {
+    where: '1234>OBJECTID',
+    esri: true
+  }
+  const normalizeOpts = normalizeQueryOptions(options)
+  const whereFragment = translateSqlWhere(normalizeOpts)
+  t.equals(whereFragment, 'hashedObjectIdComparator(attributes, geometry, 1234, \'<=\')=true')
+})
 
 test('translateSqlWhere: transform a predicate with OBJECTID and metadata fields that define the OBJECTID', t => {
   t.plan(1)
