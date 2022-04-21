@@ -291,9 +291,9 @@ test('With a string-style geometry', t => {
   run('trees', options, 6, t)
 })
 
-test('With a point geometry', t => {
+test('With a point geometry filter', t => {
   const options = {
-    geometry: '-118.162307,34.137114'
+    geometry: '-118.16230746759626,34.137113646321595'
   }
   run('trees', options, 1, t)
 })
