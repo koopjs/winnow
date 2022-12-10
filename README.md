@@ -1,10 +1,13 @@
 # Winnow
 
-*Winnow* is made for applying sql to geojson in memory. It is useful for working against geojson objects but also has built-in primitives for piping streams.
+## DEPRECATED - now migrated to a package in the [Koop monorepo](https://github.com/koopjs/koop/).  Update any `npm` usage to `@koopjs/winnow`.
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 [![npm version][npm-img]][npm-url]
 [![js-standard-style][standard-img]][standard-url]
 [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+
+*Winnow* is made for applying sql to geojson in memory. It is useful for working against geojson objects but also has built-in primitives for piping streams.
 
 # API
 ## `winnow.query`
