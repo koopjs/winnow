@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+* add support for SELECT DISTINCT queries
+
 ## [2.5.2] - 08-05-2022
 ### Changed
 * bump terraformer version
