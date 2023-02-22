@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/koopjs/winnow#readme",
   "dependencies": {
-    "@esri/proj-codes": "^2.6.0",
+    "@esri/proj-codes": "^3.0.0",
     "@hapi/joi": "^17.1.1",
     "@terraformer/arcgis": "^2.1.1",
     "@terraformer/spatial": "^2.1.2",
