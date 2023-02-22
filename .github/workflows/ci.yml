@@ -30,7 +30,7 @@ jobs:
       - run: npm install
       - run: npm run benchmark:ci
       - name: Download previous benchmark data
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ./cache
           key: ${{ runner.os }}-benchmark
